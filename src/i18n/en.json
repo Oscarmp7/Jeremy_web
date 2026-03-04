@@ -1,0 +1,69 @@
+{
+  "nav": {
+    "work": "[01 WORK]",
+    "about": "[02 ABOUT]",
+    "contact": "[03 CONTACT]"
+  },
+  "hero": {
+    "tagline": "FRAMES THAT MOVE PEOPLE.",
+    "sub": "Director & Filmmaker — Santo Domingo · Worldwide",
+    "cta_reel": "PLAY SHOWREEL",
+    "cta_work": "SEE WORK"
+  },
+  "marquee": {
+    "items": ["COMMERCIAL", "FILM", "MUSIC VIDEO", "BRAND", "NARRATIVE", "DIRECTION", "COLOR GRADE"]
+  },
+  "work": {
+    "title": "SELECTED WORK",
+    "filters": {
+      "all": "ALL",
+      "commercial": "COMMERCIAL",
+      "film": "FILM",
+      "music_video": "MUSIC VIDEO",
+      "brand": "BRAND"
+    },
+    "scene": "SCENE",
+    "client": "CLIENT",
+    "duration": "DURATION",
+    "type": "TYPE",
+    "close": "CLOSE",
+    "watch": "WATCH PROJECT"
+  },
+  "about": {
+    "title": "ABOUT",
+    "statement": "I TELL STORIES WITH A CAMERA.",
+    "bio": "Director and filmmaker based in Santo Domingo, Dominican Republic, working internationally across commercial, narrative, and music video formats. Every frame is deliberate. Every cut, intentional.",
+    "stats": {
+      "years": { "value": "8+", "label": "Years" },
+      "projects": { "value": "50+", "label": "Projects" },
+      "countries": { "value": "3", "label": "Countries" }
+    },
+    "coordinates": "18.4861° N, 69.9312° W"
+  },
+  "services": {
+    "title": "WHAT I DO",
+    "items": [
+      { "number": "01", "title": "COMMERCIAL DIRECTION", "desc": "Ads, campaigns, and brand spots built to convert and resonate." },
+      { "number": "02", "title": "BRAND FILMS", "desc": "Long-form content that positions your brand with depth and style." },
+      { "number": "03", "title": "MUSIC VIDEOS", "desc": "Visual narratives that amplify the artist's world." },
+      { "number": "04", "title": "NARRATIVE / SHORT FILM", "desc": "Story-first filmmaking with cinematic intent." },
+      { "number": "05", "title": "POST PRODUCTION & COLOR", "desc": "Editing, grading, and sound design to finish the frame." }
+    ]
+  },
+  "contact": {
+    "title": "LET'S MAKE SOMETHING REAL.",
+    "sub": "Tell me about your project.",
+    "name": "Your name",
+    "email": "Your email",
+    "project": "Tell me about your project",
+    "send": "SEND",
+    "sending": "SENDING...",
+    "success": "GOT IT. I'LL BE IN TOUCH."
+  },
+  "footer": {
+    "location": "Santo Domingo, DR",
+    "coordinates": "18.4861° N, 69.9312° W",
+    "rights": "All rights reserved.",
+    "crafted": "Crafted by"
+  }
+}

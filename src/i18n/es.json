@@ -1,0 +1,69 @@
+{
+  "nav": {
+    "work": "[01 TRABAJO]",
+    "about": "[02 SOBRE MÍ]",
+    "contact": "[03 CONTACTO]"
+  },
+  "hero": {
+    "tagline": "CUADROS QUE MUEVEN PERSONAS.",
+    "sub": "Director & Cineasta — Santo Domingo · Internacional",
+    "cta_reel": "VER SHOWREEL",
+    "cta_work": "VER TRABAJO"
+  },
+  "marquee": {
+    "items": ["COMERCIAL", "CINE", "VIDEO MUSICAL", "MARCA", "NARRATIVA", "DIRECCIÓN", "CORRECCIÓN DE COLOR"]
+  },
+  "work": {
+    "title": "TRABAJO SELECTO",
+    "filters": {
+      "all": "TODOS",
+      "commercial": "COMERCIAL",
+      "film": "CINE",
+      "music_video": "VIDEO MUSICAL",
+      "brand": "MARCA"
+    },
+    "scene": "ESCENA",
+    "client": "CLIENTE",
+    "duration": "DURACIÓN",
+    "type": "TIPO",
+    "close": "CERRAR",
+    "watch": "VER PROYECTO"
+  },
+  "about": {
+    "title": "SOBRE MÍ",
+    "statement": "CUENTO HISTORIAS CON UNA CÁMARA.",
+    "bio": "Director y cineasta basado en Santo Domingo, República Dominicana, con trabajo internacional en formatos comerciales, narrativos y videomusicales. Cada cuadro es deliberado. Cada corte, intencional.",
+    "stats": {
+      "years": { "value": "8+", "label": "Años" },
+      "projects": { "value": "50+", "label": "Proyectos" },
+      "countries": { "value": "3", "label": "Países" }
+    },
+    "coordinates": "18.4861° N, 69.9312° W"
+  },
+  "services": {
+    "title": "LO QUE HAGO",
+    "items": [
+      { "number": "01", "title": "DIRECCIÓN COMERCIAL", "desc": "Spots, campañas y piezas para marcas diseñadas para conectar y convertir." },
+      { "number": "02", "title": "BRAND FILMS", "desc": "Contenido de largo aliento que posiciona tu marca con profundidad y estilo." },
+      { "number": "03", "title": "VIDEOS MUSICALES", "desc": "Narrativas visuales que amplifican el mundo del artista." },
+      { "number": "04", "title": "NARRATIVA / CORTOMETRAJE", "desc": "Cine que pone la historia primero con intención cinematográfica." },
+      { "number": "05", "title": "POST PRODUCCIÓN & COLOR", "desc": "Edición, corrección de color y diseño de sonido para terminar el cuadro." }
+    ]
+  },
+  "contact": {
+    "title": "HAGAMOS ALGO REAL.",
+    "sub": "Cuéntame tu proyecto.",
+    "name": "Tu nombre",
+    "email": "Tu correo",
+    "project": "Cuéntame de tu proyecto",
+    "send": "ENVIAR",
+    "sending": "ENVIANDO...",
+    "success": "RECIBIDO. ESTARÉ EN CONTACTO."
+  },
+  "footer": {
+    "location": "Santo Domingo, RD",
+    "coordinates": "18.4861° N, 69.9312° W",
+    "rights": "Todos los derechos reservados.",
+    "crafted": "Creado por"
+  }
+}
