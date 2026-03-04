@@ -1,0 +1,105 @@
+.about { padding: 140px 24px; }
+
+.about__inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 80px;
+  align-items: center;
+}
+@media (max-width: 900px) {
+  .about__inner { grid-template-columns: 1fr; gap: 48px; }
+}
+
+.about__text { order: 1; }
+@media (max-width: 900px) { .about__text { order: 2; } }
+
+.about__media { order: 2; position: relative; overflow: hidden; }
+@media (max-width: 900px) { .about__media { order: 1; } }
+
+.about__img {
+  width: 100%;
+  aspect-ratio: 4/5;
+  object-fit: cover;
+  display: block;
+}
+
+.about__img-clip {
+  overflow: hidden;
+}
+
+.about__label {
+  font-family: var(--font-hud);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  margin-bottom: 16px;
+  display: block;
+}
+
+.about__statement {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 5vw, 80px);
+  line-height: 0.95;
+  color: var(--text);
+  margin-bottom: 28px;
+}
+
+.about__bio {
+  color: var(--muted);
+  font-size: clamp(15px, 1.2vw, 17px);
+  line-height: 1.7;
+  max-width: 52ch;
+  margin-bottom: 48px;
+}
+
+.about__stats {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+}
+
+.about__stat-value {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 4vw, 56px);
+  color: var(--text);
+  line-height: 1;
+  display: block;
+}
+
+.about__stat-label {
+  font-family: var(--font-hud);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  margin-top: 4px;
+  display: block;
+}
+
+.about__coordinates {
+  font-family: var(--font-hud);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--line);
+  margin-top: 8px;
+  transition: color 0.3s;
+}
+.about__coordinates:hover { color: var(--accent); }
+
+/* Decorative HUD frame on image */
+.about__media::before,
+.about__media::after {
+  content: '';
+  position: absolute;
+  width: 24px; height: 24px;
+  border-color: var(--accent);
+  border-style: solid;
+  z-index: 2;
+  opacity: 0.6;
+}
+.about__media::before { top: 12px; left: 12px; border-width: 2px 0 0 2px; }
+.about__media::after  { bottom: 12px; right: 12px; border-width: 0 2px 2px 0; }
