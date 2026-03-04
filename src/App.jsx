@@ -5,6 +5,7 @@ import Loader from './components/Loader/Loader'
 import Cursor from './components/ui/Cursor'
 import FilmGrain from './components/ui/FilmGrain'
 import Nav from './components/Nav/Nav'
+import Hero from './components/Hero/Hero'
 
 export default function App() {
   const [loaded, setLoaded] = useState(false)
@@ -19,9 +20,7 @@ export default function App() {
         <>
           <Nav />
           <main>
-            <div style={{ height: '200vh', paddingTop: '80px', color: 'var(--text)', padding: '100px 2rem' }}>
-              Nav test — scroll to see frosted effect
-            </div>
+            <Hero />
           </main>
         </>
       )}
