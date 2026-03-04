@@ -83,6 +83,7 @@ body {
   overflow-x: hidden;
   cursor: none;
 }
+@media (pointer: coarse) { body { cursor: auto; } }
 
 /* ─── Custom scrollbar (desktop only) ─── */
 @media (pointer: fine) {
