@@ -79,7 +79,7 @@ html {
   color: var(--text);
   font-family: var(--font-body);
   scroll-behavior: smooth;
-  scroll-padding-top: 120px;
+  scroll-padding-top: 138px;
   transition:
     background-color var(--transition-theme),
     color var(--transition-theme);
@@ -94,6 +94,12 @@ body {
 main {
   position: relative;
   z-index: 1;
+}
+
+@media (min-width: 1024px) {
+  main > section {
+    min-height: 100dvh;
+  }
 }
 
 a,

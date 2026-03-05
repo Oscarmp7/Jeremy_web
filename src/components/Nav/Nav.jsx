@@ -14,7 +14,7 @@ export default function Nav() {
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40)
+    const onScroll = () => setScrolled(window.scrollY > 36)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
@@ -37,57 +37,66 @@ export default function Nav() {
     { key: 'contact', href: '#contact' },
   ]
 
+  const navForeground = scrolled
+    ? 'var(--text)'
+    : 'color-mix(in oklch, var(--text), white 65%)'
+
+  const navMuted = scrolled
+    ? 'var(--muted)'
+    : 'color-mix(in oklch, var(--text), white 50%)'
+
   return (
     <>
       <header
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
         style={{
           background: scrolled
-            ? 'color-mix(in oklch, var(--bg), transparent 18%)'
-            : 'transparent',
-          backdropFilter: scrolled ? 'blur(16px)' : 'none',
-          borderBottom: scrolled ? '1px solid var(--line)' : '1px solid transparent',
+            ? 'color-mix(in oklch, var(--bg), transparent 16%)'
+            : 'color-mix(in oklch, var(--bg), transparent 55%)',
+          backdropFilter: 'blur(16px)',
+          borderBottom: scrolled ? '1px solid var(--line)' : '1px solid color-mix(in oklch, var(--line), transparent 62%)',
         }}
       >
         <div
-          className="max-w-[1480px] mx-auto px-6 md:px-10 py-5 md:py-6 grid items-center gap-4"
-          style={{ gridTemplateColumns: '1fr auto 1fr' }}
+          className="max-w-[1780px] mx-auto px-8 md:px-12 xl:px-16 py-5 md:py-6 grid items-center gap-4"
+          style={{ gridTemplateColumns: 'minmax(300px, 1fr) auto minmax(300px, 1fr)' }}
         >
           <a
             href="#hero"
-            className="text-[30px] leading-none tracking-[0.08em] hover:text-[var(--accent)] transition-colors duration-200 justify-self-start"
-            style={{ fontFamily: 'var(--font-display)', color: 'var(--text)' }}
+            className="leading-none tracking-[0.06em] transition-colors duration-200 justify-self-start text-[34px] xl:text-[40px]"
+            style={{ fontFamily: 'var(--font-display)', color: navForeground }}
           >
             JEREMY <span style={{ color: 'var(--accent)' }}>ADONAI</span>
           </a>
 
           <nav
             id={NAV_ID}
-            className="hidden md:flex items-center justify-center gap-10 col-start-2"
+            className="hidden md:flex items-center justify-center gap-3 col-start-2"
             aria-label="Main navigation"
           >
             {navLinks.map(link => (
               <a
                 key={link.key}
                 href={link.href}
-                className="relative group transition-colors duration-200 hover:text-[var(--accent)]"
+                className="transition-all duration-200 rounded-full px-4 py-2 border hover:border-[var(--accent)] hover:text-[var(--accent)]"
                 style={{
                   fontFamily: 'var(--font-hud)',
-                  fontSize: '11px',
-                  letterSpacing: '0.15em',
-                  color: 'var(--muted)',
+                  fontSize: '12px',
+                  letterSpacing: '0.13em',
+                  color: navMuted,
+                  borderColor: 'color-mix(in oklch, var(--line), transparent 30%)',
+                  background: 'color-mix(in oklch, var(--bg), transparent 65%)',
                 }}
               >
                 {t(`nav.${link.key}`)}
-                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-px bg-[var(--accent)] transition-all duration-300 w-0 group-hover:w-full" />
               </a>
             ))}
           </nav>
 
           <div className="flex items-center gap-4 justify-self-end col-start-3">
             <div
-              className="hidden lg:flex items-center gap-2"
-              style={{ fontFamily: 'var(--font-hud)', fontSize: '10px', color: 'var(--muted)' }}
+              className="hidden xl:flex items-center gap-2"
+              style={{ fontFamily: 'var(--font-hud)', fontSize: '11px', color: navMuted }}
             >
               <span
                 className="w-1.5 h-1.5 rounded-full"
@@ -104,6 +113,7 @@ export default function Nav() {
             <ThemeToggle />
 
             <button
+              type="button"
               className="md:hidden flex flex-col gap-1.5 p-1"
               onClick={() => setMenuOpen(v => !v)}
               aria-label={menuOpen ? 'Close menu' : 'Open menu'}
@@ -113,18 +123,18 @@ export default function Nav() {
               <span
                 className="block w-5 h-px transition-all duration-300"
                 style={{
-                  background: 'var(--text)',
+                  background: navForeground,
                   transform: menuOpen ? 'rotate(45deg) translate(2px, 2px)' : 'none',
                 }}
               />
               <span
                 className="block w-5 h-px transition-all duration-300"
-                style={{ background: 'var(--text)', opacity: menuOpen ? 0 : 1 }}
+                style={{ background: navForeground, opacity: menuOpen ? 0 : 1 }}
               />
               <span
                 className="block w-5 h-px transition-all duration-300"
                 style={{
-                  background: 'var(--text)',
+                  background: navForeground,
                   transform: menuOpen ? 'rotate(-45deg) translate(2px, -2px)' : 'none',
                 }}
               />
@@ -149,7 +159,7 @@ export default function Nav() {
               className="transition-colors duration-200 hover:text-[var(--accent)]"
               style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: '38px',
+                fontSize: '42px',
                 letterSpacing: '0.1em',
                 color: 'var(--text)',
                 textDecoration: 'none',

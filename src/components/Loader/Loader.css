@@ -6,6 +6,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  opacity: 1;
+  filter: blur(0);
+  transition:
+    opacity 360ms var(--ease-out),
+    filter 360ms var(--ease-out);
+}
+
+.loader--exit {
+  opacity: 0;
+  filter: blur(6px);
 }
 
 .loader__iris {
@@ -16,6 +26,12 @@
   border: 1px solid color-mix(in oklch, var(--line), var(--accent) 20%);
   background: radial-gradient(circle at center, color-mix(in oklch, var(--bg), transparent 20%) 0%, var(--bg) 72%);
   overflow: hidden;
+  transform: scale(1);
+  transition: transform 360ms var(--ease-out);
+}
+
+.loader--exit .loader__iris {
+  transform: scale(0.92);
 }
 
 .loader__blade {

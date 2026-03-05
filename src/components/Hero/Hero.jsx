@@ -101,10 +101,10 @@ export default function Hero() {
         <p className="hero__sub">{t('hero.sub')}</p>
         <div className="hero__ctas">
           <a href="#work" className="hero__btn hero__btn--primary" data-cursor="expand">
-            {t('hero.cta_reel')}
+            {t('hero.cta_work')}
           </a>
-          <a href="#work" className="hero__btn hero__btn--ghost" data-cursor="expand">
-            {t('hero.cta_work')} {'->'}
+          <a href="#contact" className="hero__btn hero__btn--ghost" data-cursor="expand">
+            {t('hero.cta_contact')} {'->'}
           </a>
         </div>
       </div>

@@ -15,8 +15,6 @@ export function useCursor() {
     let targetY = window.innerHeight / 2
     let cursorX = targetX
     let cursorY = targetY
-    let dotX = targetX
-    let dotY = targetY
     let raf = 0
 
     cursor.style.opacity = '0'
@@ -51,13 +49,12 @@ export function useCursor() {
     }
 
     const animate = () => {
-      cursorX += (targetX - cursorX) * 0.16
-      cursorY += (targetY - cursorY) * 0.16
-      dotX += (targetX - dotX) * 0.34
-      dotY += (targetY - dotY) * 0.34
+      cursorX += (targetX - cursorX) * 0.2
+      cursorY += (targetY - cursorY) * 0.2
 
-      cursor.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0) translate(-50%, -50%)`
-      dot.style.transform = `translate3d(${dotX}px, ${dotY}px, 0) translate(-50%, -50%)`
+      const transform = `translate3d(${cursorX}px, ${cursorY}px, 0) translate(-50%, -50%)`
+      cursor.style.transform = transform
+      dot.style.transform = transform
 
       raf = requestAnimationFrame(animate)
     }

@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import gsap from 'gsap'
 
@@ -12,14 +12,28 @@ export default function Marquee() {
     const track = trackRef.current
     if (!track) return
 
-    tweenRef.current = gsap.to(track, {
-      xPercent: -50,
-      duration: 22,
-      ease: 'none',
-      repeat: -1,
-    })
+    const start = () => {
+      tweenRef.current?.kill()
+      gsap.set(track, { x: 0 })
 
-    return () => tweenRef.current?.kill()
+      const distance = track.scrollWidth / 2
+      if (!distance) return
+
+      tweenRef.current = gsap.to(track, {
+        x: -distance,
+        duration: 28,
+        ease: 'none',
+        repeat: -1,
+      })
+    }
+
+    start()
+    window.addEventListener('resize', start)
+
+    return () => {
+      window.removeEventListener('resize', start)
+      tweenRef.current?.kill()
+    }
   }, [items])
 
   const doubled = [...items, ...items]
@@ -39,12 +53,12 @@ export default function Marquee() {
             style={{
               fontFamily: 'var(--font-hud)',
               fontSize: '11px',
-              letterSpacing: '0.25em',
+              letterSpacing: '0.22em',
               color: 'var(--muted)',
             }}
           >
             <span className="px-8">{item}</span>
-            <span style={{ color: 'var(--accent)', marginRight: '0px' }}>•</span>
+            <span style={{ color: 'var(--accent)', marginRight: '0px' }}>/</span>
           </span>
         ))}
       </div>
