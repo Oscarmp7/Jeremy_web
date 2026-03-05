@@ -52,9 +52,9 @@ export default function Nav() {
         style={{
           background: scrolled
             ? 'color-mix(in oklch, var(--bg), transparent 16%)'
-            : 'color-mix(in oklch, var(--bg), transparent 55%)',
-          backdropFilter: 'blur(16px)',
-          borderBottom: scrolled ? '1px solid var(--line)' : '1px solid color-mix(in oklch, var(--line), transparent 62%)',
+            : 'transparent',
+          backdropFilter: scrolled ? 'blur(16px)' : 'none',
+          borderBottom: scrolled ? '1px solid var(--line)' : '1px solid transparent',
         }}
       >
         <div
@@ -81,11 +81,16 @@ export default function Nav() {
                 className="transition-all duration-200 rounded-full px-4 py-2 border hover:border-[var(--accent)] hover:text-[var(--accent)]"
                 style={{
                   fontFamily: 'var(--font-hud)',
-                  fontSize: '12px',
+                  fontSize: '12.5px',
                   letterSpacing: '0.13em',
-                  color: navMuted,
-                  borderColor: 'color-mix(in oklch, var(--line), transparent 30%)',
-                  background: 'color-mix(in oklch, var(--bg), transparent 65%)',
+                  color: navForeground,
+                  borderColor: scrolled
+                    ? 'color-mix(in oklch, var(--line), transparent 30%)'
+                    : 'color-mix(in oklch, var(--text), transparent 72%)',
+                  background: scrolled
+                    ? 'color-mix(in oklch, var(--bg), transparent 65%)'
+                    : 'color-mix(in oklch, var(--bg), transparent 78%)',
+                  boxShadow: scrolled ? 'none' : '0 0 0 1px color-mix(in oklch, var(--bg), transparent 60%)',
                 }}
               >
                 {t(`nav.${link.key}`)}
