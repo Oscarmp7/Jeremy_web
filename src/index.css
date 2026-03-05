@@ -96,10 +96,30 @@ main {
   z-index: 1;
 }
 
-@media (min-width: 1024px) {
-  main > section {
-    min-height: 100dvh;
-  }
+main > section {
+  min-height: 100dvh;
+}
+
+.app-shell {
+  transition: opacity 180ms var(--ease-out);
+}
+
+html.theme-switching,
+html.theme-switching body,
+html.theme-switching .app-shell,
+html.theme-switching .app-shell * {
+  transition-property:
+    color,
+    background-color,
+    border-color,
+    outline-color,
+    text-decoration-color,
+    box-shadow,
+    fill,
+    stroke,
+    filter;
+  transition-duration: 240ms;
+  transition-timing-function: var(--ease-out);
 }
 
 a,
@@ -108,6 +128,26 @@ input,
 textarea,
 select {
   color: inherit;
+}
+
+.nav-link {
+  color: var(--nav-link-color);
+  text-decoration: none;
+}
+
+.nav-link:hover,
+.nav-link:focus-visible {
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.theme-toggle {
+  color: var(--muted);
+}
+
+.theme-toggle:hover,
+.theme-toggle:focus-visible {
+  color: var(--accent);
 }
 
 @media (pointer: coarse), (max-width: 900px) {
@@ -142,10 +182,43 @@ select {
 .theme-flash {
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at center, var(--accent) 0%, transparent 70%);
-  z-index: 9999;
+  background: radial-gradient(circle at center, color-mix(in oklch, var(--accent), transparent 86%) 0%, transparent 72%);
+  z-index: 10002;
   pointer-events: none;
   opacity: 0;
+  transition: opacity 240ms var(--ease-out);
+}
+
+html.theme-switching .theme-flash {
+  opacity: 0.65;
+}
+
+.lang-flash {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, color-mix(in oklch, var(--accent), transparent 90%) 0%, transparent 62%);
+  z-index: 10001;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 180ms var(--ease-out);
+}
+
+html.lang-switching .app-shell {
+  opacity: 0.985;
+}
+
+html.lang-switching .film-grain {
+  opacity: 0.24 !important;
+  transition: opacity 180ms var(--ease-out);
+}
+
+html.lang-switching .cursor-ring,
+html.lang-switching .cursor-dot {
+  opacity: 0.65;
+}
+
+html.lang-switching .lang-flash {
+  opacity: 1;
 }
 
 .cursor-ring {

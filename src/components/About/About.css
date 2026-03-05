@@ -1,4 +1,9 @@
-.about { padding: 140px 24px; }
+.about {
+  min-height: 100dvh;
+  padding: clamp(92px, 11vh, 140px) 24px;
+  display: flex;
+  align-items: center;
+}
 
 .about__inner {
   max-width: 1400px;

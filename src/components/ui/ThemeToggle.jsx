@@ -9,8 +9,8 @@ export default function ThemeToggle() {
       type="button"
       onClick={toggle}
       aria-label={`Switch to ${nextTheme} mode`}
-      className="text-xs tracking-[0.14em] transition-colors duration-200 border border-[var(--line)] px-2.5 py-1 rounded hover:text-[var(--accent)]"
-      style={{ fontFamily: 'var(--font-hud)', color: 'var(--muted)' }}
+      className="theme-toggle h-[38px] min-w-[90px] rounded-full border border-[var(--line)] px-4 text-[10px] tracking-[0.13em] transition-colors duration-200"
+      style={{ fontFamily: 'var(--font-hud)', background: 'color-mix(in oklch, var(--bg), transparent 45%)' }}
     >
       {theme === 'dark' ? 'LIGHT' : 'DARK'}
     </button>

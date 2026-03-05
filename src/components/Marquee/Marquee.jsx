@@ -40,7 +40,7 @@ export default function Marquee() {
 
   return (
     <div
-      className="overflow-hidden border-y py-4"
+      className="overflow-hidden border-y py-6 md:py-7"
       style={{ borderColor: 'var(--line)', background: 'var(--bg)' }}
       onMouseEnter={() => tweenRef.current?.pause()}
       onMouseLeave={() => tweenRef.current?.resume()}
@@ -52,13 +52,13 @@ export default function Marquee() {
             className="inline-flex items-center"
             style={{
               fontFamily: 'var(--font-hud)',
-              fontSize: '11px',
-              letterSpacing: '0.22em',
+              fontSize: 'clamp(12px, 1.05vw, 14px)',
+              letterSpacing: '0.19em',
               color: 'var(--muted)',
             }}
           >
-            <span className="px-8">{item}</span>
-            <span style={{ color: 'var(--accent)', marginRight: '0px' }}>/</span>
+            <span className="px-10 md:px-12">{item}</span>
+            <span style={{ color: 'var(--accent)', marginRight: '2px' }}>/</span>
           </span>
         ))}
       </div>

@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
-import gsap from 'gsap'
+import { useEffect, useState } from 'react'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useTranslation } from 'react-i18next'
 import './index.css'
 
 import Loader from './components/Loader/Loader'
@@ -16,72 +17,50 @@ import Footer from './components/Footer/Footer'
 
 export default function App() {
   const [loaded, setLoaded] = useState(false)
-  const shellRef = useRef(null)
+  const { i18n } = useTranslation()
 
   useEffect(() => {
-    if (!loaded || !shellRef.current) return
+    if (!loaded) return
 
-    const ctx = gsap.context(() => {
-      const targets = shellRef.current.querySelectorAll('[data-intro]')
-      gsap.set(targets, { autoAlpha: 0, y: 24, filter: 'blur(8px)' })
-
-      gsap.to(targets, {
-        autoAlpha: 1,
-        y: 0,
-        filter: 'blur(0px)',
-        duration: 0.9,
-        stagger: 0.08,
-        ease: 'power3.out',
-        clearProps: 'all',
-      })
-    }, shellRef)
-
-    return () => ctx.revert()
+    const raf = requestAnimationFrame(() => ScrollTrigger.refresh())
+    return () => cancelAnimationFrame(raf)
   }, [loaded])
+
+  useEffect(() => {
+    if (!loaded) return
+
+    const timeout = window.setTimeout(() => {
+      ScrollTrigger.refresh()
+    }, 190)
+
+    return () => window.clearTimeout(timeout)
+  }, [loaded, i18n.language])
 
   return (
     <>
       <div
         className="theme-flash"
-        style={{ transition: 'opacity 200ms ease' }}
         aria-hidden="true"
       />
+      <div className="lang-flash" aria-hidden="true" />
 
       <Loader onComplete={() => setLoaded(true)} />
 
       <Cursor />
       <FilmGrain />
 
-      {loaded && (
-        <div ref={shellRef}>
-          <div data-intro>
-            <Nav />
-          </div>
-          <main>
-            <div data-intro>
-              <Hero />
-            </div>
-            <div data-intro>
-              <Marquee />
-            </div>
-            <div data-intro>
-              <Work />
-            </div>
-            <div data-intro>
-              <About />
-            </div>
-            <div data-intro>
-              <Services />
-            </div>
-            <div data-intro>
-              <Contact />
-            </div>
-          </main>
-          <div data-intro>
-            <Footer />
-          </div>
-        </div>
-      )}
+      <div className="app-shell">
+        <Nav />
+        <main>
+          <Hero ready={loaded} />
+          <Marquee />
+          <Work />
+          <About />
+          <Services />
+          <Contact />
+        </main>
+        <Footer />
+      </div>
     </>
   )
 }

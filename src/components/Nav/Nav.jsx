@@ -48,22 +48,24 @@ export default function Nav() {
   return (
     <>
       <header
-        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+        className="fixed top-0 left-0 right-0 z-50 transition-all duration-400"
         style={{
           background: scrolled
             ? 'color-mix(in oklch, var(--bg), transparent 16%)'
             : 'transparent',
-          backdropFilter: scrolled ? 'blur(16px)' : 'none',
+          backdropFilter: scrolled ? 'blur(15px)' : 'none',
           borderBottom: scrolled ? '1px solid var(--line)' : '1px solid transparent',
+          boxShadow: scrolled ? '0 10px 28px rgba(0, 0, 0, 0.16)' : 'none',
+          transform: scrolled ? 'translateY(0)' : 'translateY(-2px)',
         }}
       >
         <div
-          className="max-w-[1780px] mx-auto px-8 md:px-12 xl:px-16 py-5 md:py-6 grid items-center gap-4"
-          style={{ gridTemplateColumns: 'minmax(300px, 1fr) auto minmax(300px, 1fr)' }}
+          className="max-w-[2240px] mx-auto px-[clamp(24px,4.8vw,170px)] py-[clamp(14px,2.2vh,30px)] grid items-center gap-5"
+          style={{ gridTemplateColumns: 'minmax(0, 1fr) auto minmax(0, 1fr)' }}
         >
           <a
             href="#hero"
-            className="leading-none tracking-[0.06em] transition-colors duration-200 justify-self-start text-[34px] xl:text-[40px]"
+            className="leading-none tracking-[0.06em] transition-colors duration-200 text-[27px] sm:text-[34px] xl:text-[40px] justify-self-start"
             style={{ fontFamily: 'var(--font-display)', color: navForeground }}
           >
             JEREMY <span style={{ color: 'var(--accent)' }}>ADONAI</span>
@@ -71,26 +73,20 @@ export default function Nav() {
 
           <nav
             id={NAV_ID}
-            className="hidden md:flex items-center justify-center gap-3 col-start-2"
+            className="hidden lg:flex items-center justify-center gap-3 xl:gap-5 col-start-2 justify-self-center"
             aria-label="Main navigation"
           >
             {navLinks.map(link => (
               <a
                 key={link.key}
                 href={link.href}
-                className="transition-all duration-200 rounded-full px-4 py-2 border hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                className="nav-link transition-all duration-200 rounded-full px-3.5 xl:px-5 py-2"
                 style={{
+                  '--nav-link-color': navForeground,
                   fontFamily: 'var(--font-hud)',
-                  fontSize: '12.5px',
-                  letterSpacing: '0.13em',
-                  color: navForeground,
-                  borderColor: scrolled
-                    ? 'color-mix(in oklch, var(--line), transparent 30%)'
-                    : 'color-mix(in oklch, var(--text), transparent 72%)',
-                  background: scrolled
-                    ? 'color-mix(in oklch, var(--bg), transparent 65%)'
-                    : 'color-mix(in oklch, var(--bg), transparent 78%)',
-                  boxShadow: scrolled ? 'none' : '0 0 0 1px color-mix(in oklch, var(--bg), transparent 60%)',
+                  fontSize: '12px',
+                  letterSpacing: '0.12em',
+                  background: 'transparent',
                 }}
               >
                 {t(`nav.${link.key}`)}
@@ -98,32 +94,47 @@ export default function Nav() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-4 justify-self-end col-start-3">
+          <div className="flex items-center gap-3 sm:gap-4 xl:gap-5 justify-self-end col-start-3">
             <div
-              className="hidden xl:flex items-center gap-2"
-              style={{ fontFamily: 'var(--font-hud)', fontSize: '11px', color: navMuted }}
+              className="hidden 2xl:flex items-center gap-2"
+              style={{
+                fontFamily: 'var(--font-hud)',
+                fontSize: '11px',
+                color: navMuted,
+                opacity: scrolled ? 1 : 0.88,
+                transition: 'opacity 280ms ease',
+              }}
             >
               <span
                 className="w-1.5 h-1.5 rounded-full"
                 style={{
-                  backgroundColor: recOn ? 'var(--accent)' : 'transparent',
-                  boxShadow: recOn ? '0 0 4px var(--accent)' : 'none',
+                  backgroundColor: recOn ? '#F94949' : 'transparent',
+                  boxShadow: recOn ? '0 0 5px rgba(249, 73, 73, 0.9)' : 'none',
                   transition: 'all 0.1s',
                 }}
               />
-              <span style={{ color: 'var(--hud)', letterSpacing: '0.09em' }}>REC {timecode}</span>
+              <span style={{ color: 'var(--muted)', letterSpacing: '0.09em' }}>REC {timecode}</span>
             </div>
 
-            <LangToggle />
-            <ThemeToggle />
+            <div className="hidden lg:block">
+              <LangToggle />
+            </div>
+            <div className="hidden lg:block">
+              <ThemeToggle />
+            </div>
 
             <button
               type="button"
-              className="md:hidden flex flex-col gap-1.5 p-1"
+              className="lg:hidden flex flex-col items-center justify-center gap-1.5 w-10 h-10 rounded-full border border-[var(--line)]"
               onClick={() => setMenuOpen(v => !v)}
               aria-label={menuOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={menuOpen}
               aria-controls={NAV_ID}
+              style={{
+                background: scrolled
+                  ? 'color-mix(in oklch, var(--bg), transparent 24%)'
+                  : 'color-mix(in oklch, var(--bg), transparent 38%)',
+              }}
             >
               <span
                 className="block w-5 h-px transition-all duration-300"
@@ -150,7 +161,7 @@ export default function Nav() {
 
       {menuOpen && (
         <div
-          className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-10 md:hidden"
+          className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-10 lg:hidden"
           style={{ background: 'var(--bg)' }}
           role="dialog"
           aria-modal="true"
@@ -161,12 +172,12 @@ export default function Nav() {
               key={link.key}
               href={link.href}
               onClick={() => setMenuOpen(false)}
-              className="transition-colors duration-200 hover:text-[var(--accent)]"
+              className="nav-link transition-colors duration-200"
               style={{
+                '--nav-link-color': 'var(--text)',
                 fontFamily: 'var(--font-display)',
                 fontSize: '42px',
                 letterSpacing: '0.1em',
-                color: 'var(--text)',
                 textDecoration: 'none',
               }}
             >

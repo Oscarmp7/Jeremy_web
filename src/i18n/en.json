@@ -1,8 +1,8 @@
 {
     "nav":  {
-                "work":  "[01 WORK]",
-                "about":  "[02 ABOUT]",
-                "contact":  "[03 CONTACT]"
+                "work":  "[WORK]",
+                "about":  "[ABOUT ME]",
+                "contact":  "[CONTACT]"
             },
     "hero":  {
                  "tagline":  "FRAMES THAT MOVE PEOPLE.",

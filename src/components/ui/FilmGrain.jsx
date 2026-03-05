@@ -56,7 +56,7 @@ export default function FilmGrain() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-[100] mix-blend-overlay w-full h-full"
+      className="film-grain fixed inset-0 pointer-events-none z-[100] mix-blend-overlay w-full h-full"
       style={{ opacity: 0.32 }}
       aria-hidden="true"
     />

@@ -1,8 +1,8 @@
 {
     "nav":  {
-                "work":  "[01 TRABAJO]",
-                "about":  "[02 SOBRE MÍ]",
-                "contact":  "[03 CONTACTO]"
+                "work":  "[TRABAJO]",
+                "about":  "[SOBRE MI]",
+                "contact":  "[CONTACTO]"
             },
     "hero":  {
                  "tagline":  "CUADROS QUE MUEVEN PERSONAS.",
@@ -105,3 +105,4 @@
                    "crafted":  "Creado por"
                }
 }
+

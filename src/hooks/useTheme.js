@@ -1,6 +1,8 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 
 export function useTheme() {
+  const timeoutRef = useRef(null)
+
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem('ja-theme')
     if (saved === 'light' || saved === 'dark') return saved
@@ -12,17 +14,25 @@ export function useTheme() {
     localStorage.setItem('ja-theme', theme)
   }, [theme])
 
-  const toggle = useCallback(() => {
-    const flash = document.querySelector('.theme-flash')
-    if (flash) {
-      flash.style.opacity = '1'
-      setTimeout(() => {
-        setTheme(t => (t === 'dark' ? 'light' : 'dark'))
-        flash.style.opacity = '0'
-      }, 80)
-    } else {
-      setTheme(t => (t === 'dark' ? 'light' : 'dark'))
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) window.clearTimeout(timeoutRef.current)
+      document.documentElement.classList.remove('theme-switching')
     }
+  }, [])
+
+  const toggle = useCallback(() => {
+    const root = document.documentElement
+    if (root.classList.contains('theme-switching')) return
+
+    root.classList.add('theme-switching')
+    setTheme(t => (t === 'dark' ? 'light' : 'dark'))
+
+    if (timeoutRef.current) window.clearTimeout(timeoutRef.current)
+    timeoutRef.current = window.setTimeout(() => {
+      root.classList.remove('theme-switching')
+      timeoutRef.current = null
+    }, 260)
   }, [])
 
   return { theme, toggle }
