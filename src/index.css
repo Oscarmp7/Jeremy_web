@@ -31,6 +31,9 @@
 }
 
 :root {
+  --layout-max: 2240px;
+  --layout-pad: clamp(24px, 4.8vw, 170px);
+  --nav-height: 132px;
   --bg: #070B12;
   --surface: #0F1622;
   --text: #E9EEF7;
@@ -79,7 +82,8 @@ html {
   color: var(--text);
   font-family: var(--font-body);
   scroll-behavior: smooth;
-  scroll-padding-top: 138px;
+  scroll-padding-top: calc(var(--nav-height) + 14px);
+  scrollbar-gutter: stable both-edges;
   transition:
     background-color var(--transition-theme),
     color var(--transition-theme);
@@ -98,6 +102,7 @@ main {
 
 main > section {
   min-height: 100dvh;
+  scroll-margin-top: calc(var(--nav-height) + 14px);
 }
 
 .app-shell {

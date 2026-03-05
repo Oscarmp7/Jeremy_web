@@ -53,6 +53,13 @@ export default function Work() {
       const mm = gsap.matchMedia()
 
       mm.add('(min-width: 1024px)', () => {
+        const getNavOffset = () => {
+          const raw = getComputedStyle(document.documentElement).getPropertyValue('--nav-height').trim()
+          const parsed = Number.parseFloat(raw)
+          if (!Number.isFinite(parsed)) return 98
+          return Math.max(74, parsed + 8)
+        }
+
         const getShift = () => Math.max(0, track.scrollWidth - track.parentElement.clientWidth)
 
         const tween = gsap.to(track, {
@@ -60,8 +67,8 @@ export default function Work() {
           ease: 'none',
           scrollTrigger: {
             trigger: section,
-            start: 'top top+=92',
-            end: () => `+=${Math.max(getShift() * 1.25, 1)}`,
+            start: () => `top top+=${getNavOffset()}`,
+            end: () => `+=${Math.max(getShift() + window.innerWidth * 0.22, 1)}`,
             scrub: 1,
             pin: true,
             anticipatePin: 1,

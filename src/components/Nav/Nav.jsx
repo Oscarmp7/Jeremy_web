@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLiveTimecode } from '../../hooks/useLiveTimecode'
 import ThemeToggle from '../ui/ThemeToggle'
@@ -9,6 +9,7 @@ const NAV_ID = 'site-primary-nav'
 export default function Nav() {
   const { t } = useTranslation()
   const timecode = useLiveTimecode()
+  const headerRef = useRef(null)
   const [scrolled, setScrolled] = useState(false)
   const [recOn, setRecOn] = useState(true)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -22,6 +23,28 @@ export default function Nav() {
   useEffect(() => {
     const id = setInterval(() => setRecOn(v => !v), 800)
     return () => clearInterval(id)
+  }, [])
+
+  useEffect(() => {
+    const updateNavHeight = () => {
+      const height = headerRef.current?.offsetHeight
+      if (!height) return
+      document.documentElement.style.setProperty('--nav-height', `${Math.ceil(height)}px`)
+    }
+
+    updateNavHeight()
+    window.addEventListener('resize', updateNavHeight)
+
+    const observer = typeof ResizeObserver !== 'undefined'
+      ? new ResizeObserver(updateNavHeight)
+      : null
+
+    if (observer && headerRef.current) observer.observe(headerRef.current)
+
+    return () => {
+      window.removeEventListener('resize', updateNavHeight)
+      observer?.disconnect()
+    }
   }, [])
 
   useEffect(() => {
@@ -48,6 +71,7 @@ export default function Nav() {
   return (
     <>
       <header
+        ref={headerRef}
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-400"
         style={{
           background: scrolled
@@ -60,12 +84,15 @@ export default function Nav() {
         }}
       >
         <div
-          className="max-w-[2240px] mx-auto px-[clamp(24px,4.8vw,170px)] py-[clamp(14px,2.2vh,30px)] grid items-center gap-5"
-          style={{ gridTemplateColumns: 'minmax(0, 1fr) auto minmax(0, 1fr)' }}
+          className="mx-auto w-full relative flex items-center justify-between gap-6"
+          style={{
+            paddingInline: 'clamp(20px, 3.2vw, 88px)',
+            paddingBlock: 'clamp(10px, 1.6vh, 20px)',
+          }}
         >
           <a
             href="#hero"
-            className="leading-none tracking-[0.06em] transition-colors duration-200 text-[27px] sm:text-[34px] xl:text-[40px] justify-self-start"
+            className="leading-none tracking-[0.06em] transition-colors duration-200 text-[27px] sm:text-[34px] xl:text-[40px] shrink-0"
             style={{ fontFamily: 'var(--font-display)', color: navForeground }}
           >
             JEREMY <span style={{ color: 'var(--accent)' }}>ADONAI</span>
@@ -73,14 +100,14 @@ export default function Nav() {
 
           <nav
             id={NAV_ID}
-            className="hidden lg:flex items-center justify-center gap-3 xl:gap-5 col-start-2 justify-self-center"
+            className="hidden xl:flex items-center justify-center gap-4 2xl:gap-5 absolute left-1/2 -translate-x-1/2"
             aria-label="Main navigation"
           >
             {navLinks.map(link => (
               <a
                 key={link.key}
                 href={link.href}
-                className="nav-link transition-all duration-200 rounded-full px-3.5 xl:px-5 py-2"
+                className="nav-link transition-all duration-200 rounded-full px-4 2xl:px-5 py-2"
                 style={{
                   '--nav-link-color': navForeground,
                   fontFamily: 'var(--font-hud)',
@@ -94,7 +121,7 @@ export default function Nav() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-3 sm:gap-4 xl:gap-5 justify-self-end col-start-3">
+          <div className="flex items-center gap-3 sm:gap-4 xl:gap-5 shrink-0">
             <div
               className="hidden 2xl:flex items-center gap-2"
               style={{
@@ -116,16 +143,16 @@ export default function Nav() {
               <span style={{ color: 'var(--muted)', letterSpacing: '0.09em' }}>REC {timecode}</span>
             </div>
 
-            <div className="hidden lg:block">
+            <div className="hidden xl:block">
               <LangToggle />
             </div>
-            <div className="hidden lg:block">
+            <div className="hidden xl:block">
               <ThemeToggle />
             </div>
 
             <button
               type="button"
-              className="lg:hidden flex flex-col items-center justify-center gap-1.5 w-10 h-10 rounded-full border border-[var(--line)]"
+              className="xl:hidden flex flex-col items-center justify-center gap-1.5 w-10 h-10 rounded-full border border-[var(--line)]"
               onClick={() => setMenuOpen(v => !v)}
               aria-label={menuOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={menuOpen}
@@ -161,7 +188,7 @@ export default function Nav() {
 
       {menuOpen && (
         <div
-          className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-10 lg:hidden"
+          className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-10 xl:hidden"
           style={{ background: 'var(--bg)' }}
           role="dialog"
           aria-modal="true"

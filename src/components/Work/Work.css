@@ -8,9 +8,9 @@
 }
 
 .work__header {
-  max-width: 1480px;
+  width: min(100%, var(--layout-max));
   margin: 0 auto 52px;
-  padding: 0 24px;
+  padding-inline: var(--layout-pad);
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -57,7 +57,7 @@
 .work__track {
   display: flex;
   gap: 20px;
-  padding: 0 24px;
+  padding-inline: var(--layout-pad);
   will-change: transform;
 }
 
