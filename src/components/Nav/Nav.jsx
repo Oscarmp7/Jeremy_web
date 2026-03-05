@@ -4,6 +4,8 @@ import { useLiveTimecode } from '../../hooks/useLiveTimecode'
 import ThemeToggle from '../ui/ThemeToggle'
 import LangToggle from '../ui/LangToggle'
 
+const NAV_ID = 'site-primary-nav'
+
 export default function Nav() {
   const { t } = useTranslation()
   const timecode = useLiveTimecode()
@@ -17,16 +19,16 @@ export default function Nav() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // REC blink
   useEffect(() => {
     const id = setInterval(() => setRecOn(v => !v), 800)
     return () => clearInterval(id)
   }, [])
 
-  // Lock body scroll when menu open
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
+    return () => {
+      document.body.style.overflow = ''
+    }
   }, [menuOpen])
 
   const navLinks = [
@@ -41,42 +43,48 @@ export default function Nav() {
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
         style={{
           background: scrolled
-            ? 'color-mix(in oklch, var(--bg), transparent 15%)'
+            ? 'color-mix(in oklch, var(--bg), transparent 18%)'
             : 'transparent',
-          backdropFilter: scrolled ? 'blur(12px)' : 'none',
+          backdropFilter: scrolled ? 'blur(16px)' : 'none',
           borderBottom: scrolled ? '1px solid var(--line)' : '1px solid transparent',
         }}
       >
-        <div className="max-w-[1400px] mx-auto px-6 py-4 flex items-center justify-between">
-          {/* Logo */}
+        <div
+          className="max-w-[1480px] mx-auto px-6 md:px-10 py-5 md:py-6 grid items-center gap-4"
+          style={{ gridTemplateColumns: '1fr auto 1fr' }}
+        >
           <a
             href="#hero"
-            className="text-2xl tracking-wider hover:text-[var(--accent)] transition-colors duration-200"
+            className="text-[30px] leading-none tracking-[0.08em] hover:text-[var(--accent)] transition-colors duration-200 justify-self-start"
             style={{ fontFamily: 'var(--font-display)', color: 'var(--text)' }}
           >
             JEREMY <span style={{ color: 'var(--accent)' }}>ADONAI</span>
           </a>
 
-          {/* Center: Nav links (desktop) */}
-          <nav className="hidden md:flex items-center gap-8" aria-label="Main navigation">
+          <nav
+            id={NAV_ID}
+            className="hidden md:flex items-center justify-center gap-10 col-start-2"
+            aria-label="Main navigation"
+          >
             {navLinks.map(link => (
               <a
                 key={link.key}
                 href={link.href}
                 className="relative group transition-colors duration-200 hover:text-[var(--accent)]"
-                style={{ fontFamily: 'var(--font-hud)', fontSize: '11px', letterSpacing: '0.12em', color: 'var(--muted)' }}
+                style={{
+                  fontFamily: 'var(--font-hud)',
+                  fontSize: '11px',
+                  letterSpacing: '0.15em',
+                  color: 'var(--muted)',
+                }}
               >
                 {t(`nav.${link.key}`)}
-                <span
-                  className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-px bg-[var(--accent)] transition-all duration-300 w-0 group-hover:w-full"
-                />
+                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-px bg-[var(--accent)] transition-all duration-300 w-0 group-hover:w-full" />
               </a>
             ))}
           </nav>
 
-          {/* Right: REC + timecode + toggles */}
-          <div className="flex items-center gap-4">
-            {/* HUD: REC + timecode */}
+          <div className="flex items-center gap-4 justify-self-end col-start-3">
             <div
               className="hidden lg:flex items-center gap-2"
               style={{ fontFamily: 'var(--font-hud)', fontSize: '10px', color: 'var(--muted)' }}
@@ -84,24 +92,23 @@ export default function Nav() {
               <span
                 className="w-1.5 h-1.5 rounded-full"
                 style={{
-                  backgroundColor: recOn ? '#FF4D00' : 'transparent',
-                  boxShadow: recOn ? '0 0 4px #FF4D00' : 'none',
+                  backgroundColor: recOn ? 'var(--accent)' : 'transparent',
+                  boxShadow: recOn ? '0 0 4px var(--accent)' : 'none',
                   transition: 'all 0.1s',
                 }}
               />
-              <span style={{ color: 'var(--hud)', letterSpacing: '0.08em' }}>
-                REC {timecode}
-              </span>
+              <span style={{ color: 'var(--hud)', letterSpacing: '0.09em' }}>REC {timecode}</span>
             </div>
 
             <LangToggle />
             <ThemeToggle />
 
-            {/* Hamburger (mobile) */}
             <button
               className="md:hidden flex flex-col gap-1.5 p-1"
               onClick={() => setMenuOpen(v => !v)}
               aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={menuOpen}
+              aria-controls={NAV_ID}
             >
               <span
                 className="block w-5 h-px transition-all duration-300"
@@ -112,10 +119,7 @@ export default function Nav() {
               />
               <span
                 className="block w-5 h-px transition-all duration-300"
-                style={{
-                  background: 'var(--text)',
-                  opacity: menuOpen ? 0 : 1,
-                }}
+                style={{ background: 'var(--text)', opacity: menuOpen ? 0 : 1 }}
               />
               <span
                 className="block w-5 h-px transition-all duration-300"
@@ -129,11 +133,13 @@ export default function Nav() {
         </div>
       </header>
 
-      {/* Mobile menu overlay */}
       {menuOpen && (
         <div
           className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-10 md:hidden"
           style={{ background: 'var(--bg)' }}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Mobile navigation"
         >
           {navLinks.map(link => (
             <a
@@ -143,7 +149,7 @@ export default function Nav() {
               className="transition-colors duration-200 hover:text-[var(--accent)]"
               style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: '36px',
+                fontSize: '38px',
                 letterSpacing: '0.1em',
                 color: 'var(--text)',
                 textDecoration: 'none',

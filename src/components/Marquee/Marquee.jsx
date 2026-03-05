@@ -14,7 +14,7 @@ export default function Marquee() {
 
     tweenRef.current = gsap.to(track, {
       xPercent: -50,
-      duration: 20,
+      duration: 22,
       ease: 'none',
       repeat: -1,
     })
@@ -22,7 +22,7 @@ export default function Marquee() {
     return () => tweenRef.current?.kill()
   }, [items])
 
-  const doubled = [...items, ...items] // duplicate for seamless loop
+  const doubled = [...items, ...items]
 
   return (
     <div
@@ -32,14 +32,19 @@ export default function Marquee() {
       onMouseLeave={() => tweenRef.current?.resume()}
     >
       <div ref={trackRef} className="flex whitespace-nowrap gap-0" style={{ width: 'max-content' }}>
-        {doubled.map((item, i) => (
+        {doubled.map((item, index) => (
           <span
-            key={i}
+            key={index}
             className="inline-flex items-center"
-            style={{ fontFamily: 'var(--font-hud)', fontSize: '11px', letterSpacing: '0.25em', color: 'var(--muted)' }}
+            style={{
+              fontFamily: 'var(--font-hud)',
+              fontSize: '11px',
+              letterSpacing: '0.25em',
+              color: 'var(--muted)',
+            }}
           >
             <span className="px-8">{item}</span>
-            <span style={{ color: 'var(--accent)', marginRight: '0px' }}>Â·</span>
+            <span style={{ color: 'var(--accent)', marginRight: '0px' }}>•</span>
           </span>
         ))}
       </div>

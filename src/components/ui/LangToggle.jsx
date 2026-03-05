@@ -8,6 +8,7 @@ export default function LangToggle() {
 
   return (
     <button
+      type="button"
       onClick={toggle}
       aria-label={`Switch to ${isEN ? 'Spanish' : 'English'}`}
       className="hover:text-[var(--accent)] transition-colors duration-200"

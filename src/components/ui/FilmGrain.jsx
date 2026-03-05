@@ -1,35 +1,51 @@
 import { useEffect, useRef } from 'react'
 
+const GRAIN_SCALE = 0.28
+const TARGET_FPS = 14
+
 export default function FilmGrain() {
   const canvasRef = useRef(null)
 
   useEffect(() => {
     const canvas = canvasRef.current
-    const ctx = canvas.getContext('2d')
-    let raf
+    if (!canvas) return
+
+    const ctx = canvas.getContext('2d', { alpha: true })
+    if (!ctx) return
+
+    let raf = 0
+    let lastFrame = 0
 
     const resize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+      canvas.width = Math.max(1, Math.floor(window.innerWidth * GRAIN_SCALE))
+      canvas.height = Math.max(1, Math.floor(window.innerHeight * GRAIN_SCALE))
+      ctx.imageSmoothingEnabled = false
     }
 
-    const draw = () => {
-      const imageData = ctx.createImageData(canvas.width, canvas.height)
-      const data = imageData.data
-      for (let i = 0; i < data.length; i += 4) {
-        const v = Math.random() * 255
-        data[i] = v
-        data[i + 1] = v
-        data[i + 2] = v
-        data[i + 3] = 12 // ~5% opacity
+    const draw = now => {
+      const frameInterval = 1000 / TARGET_FPS
+      if (now - lastFrame >= frameInterval) {
+        const imageData = ctx.createImageData(canvas.width, canvas.height)
+        const data = imageData.data
+
+        for (let i = 0; i < data.length; i += 4) {
+          const value = Math.random() * 255
+          data[i] = value
+          data[i + 1] = value
+          data[i + 2] = value
+          data[i + 3] = 14
+        }
+
+        ctx.putImageData(imageData, 0, 0)
+        lastFrame = now
       }
-      ctx.putImageData(imageData, 0, 0)
+
       raf = requestAnimationFrame(draw)
     }
 
     resize()
     window.addEventListener('resize', resize)
-    draw()
+    raf = requestAnimationFrame(draw)
 
     return () => {
       cancelAnimationFrame(raf)
@@ -40,8 +56,8 @@ export default function FilmGrain() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-[100] mix-blend-overlay"
-      style={{ opacity: 0.4 }}
+      className="fixed inset-0 pointer-events-none z-[100] mix-blend-overlay w-full h-full"
+      style={{ opacity: 0.32 }}
       aria-hidden="true"
     />
   )

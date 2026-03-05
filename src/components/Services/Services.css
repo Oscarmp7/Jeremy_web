@@ -1,4 +1,6 @@
-.services { padding: 140px 24px; }
+.services {
+  padding: 140px 24px;
+}
 
 .services__inner {
   max-width: 1400px;
@@ -14,18 +16,30 @@
 }
 
 .service-line {
+  width: 100%;
+  text-align: left;
+  border: 0;
   border-top: 1px solid var(--line);
   padding: 24px 0;
+  background: transparent;
   display: grid;
   grid-template-columns: 80px 1fr auto;
   gap: 24px;
   align-items: start;
-  cursor: none;
   transition: border-color 0.2s ease;
 }
-.service-line:hover { border-top-color: var(--accent); }
-.service-line:last-child { border-bottom: 1px solid var(--line); }
-.service-line:last-child:hover { border-bottom-color: var(--accent); }
+
+.service-line:hover {
+  border-top-color: var(--accent);
+}
+
+.service-line:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.service-line:last-child:hover {
+  border-bottom-color: var(--accent);
+}
 
 .service-line__num {
   font-family: var(--font-hud);
@@ -41,7 +55,10 @@
   color: var(--text);
   transition: color 0.2s ease;
 }
-.service-line:hover .service-line__title { color: var(--accent); }
+
+.service-line:hover .service-line__title {
+  color: var(--accent);
+}
 
 .service-line__desc {
   color: var(--muted);
@@ -54,6 +71,7 @@
   transition: height 0.3s ease, opacity 0.3s ease;
   opacity: 0;
 }
+
 .service-line:hover .service-line__desc {
   opacity: 1;
 }
@@ -64,6 +82,7 @@
   padding-top: 4px;
   transition: transform 0.3s ease, color 0.2s ease;
 }
+
 .service-line:hover .service-line__arrow {
   transform: translate(4px, -4px);
   color: var(--accent);

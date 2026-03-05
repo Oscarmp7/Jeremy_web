@@ -1,32 +1,44 @@
 .loader {
   position: fixed;
   inset: 0;
-  background: #080808;
+  background: var(--bg);
   z-index: 10000;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.loader__aperture {
-  width: 120px;
-  height: 120px;
+.loader__iris {
+  width: clamp(120px, 12vw, 170px);
+  aspect-ratio: 1;
   position: relative;
+  border-radius: 50%;
+  border: 1px solid color-mix(in oklch, var(--line), var(--accent) 20%);
+  background: radial-gradient(circle at center, color-mix(in oklch, var(--bg), transparent 20%) 0%, var(--bg) 72%);
+  overflow: hidden;
 }
 
 .loader__blade {
   position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: #FF4D00;
-  clip-path: polygon(50% 50%, 100% 0%, 100% 40%);
-  transform-origin: center;
-  animation: blade-open 1s ease-in-out forwards;
+  inset: -4%;
+  background: linear-gradient(140deg, color-mix(in oklch, var(--accent), white 18%) 0%, color-mix(in oklch, var(--surface), black 10%) 80%);
+  clip-path: polygon(50% 50%, 100% 8%, 100% 52%, 66% 60%);
+  transform-origin: 50% 50%;
+  transform: rotate(var(--r)) translateX(20%);
+  opacity: 0.95;
+  animation: iris-close 1.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes blade-open {
-  0% { transform: rotate(var(--r)) scale(1); opacity: 1; }
-  100% { transform: rotate(var(--r)) scale(0); opacity: 0; }
+.loader__aperture-hole {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 48%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1px solid color-mix(in oklch, var(--accent), transparent 70%);
+  animation: aperture-close 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .loader__monogram {
@@ -36,14 +48,46 @@
   align-items: center;
   justify-content: center;
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 36px;
-  color: #F0EBE1;
-  animation: mono-fade 1.2s ease forwards;
+  font-size: clamp(28px, 2.7vw, 40px);
+  letter-spacing: 0.08em;
+  color: var(--text);
+  text-shadow: 0 0 18px color-mix(in oklch, var(--accent), transparent 74%);
+  animation: mono-fade 1.45s ease forwards;
+}
+
+@keyframes iris-close {
+  0% {
+    transform: rotate(var(--r)) translateX(20%);
+  }
+  100% {
+    transform: rotate(calc(var(--r) + 28deg)) translateX(0%);
+  }
+}
+
+@keyframes aperture-close {
+  0% {
+    width: 48%;
+    opacity: 1;
+  }
+  100% {
+    width: 8%;
+    opacity: 0.9;
+  }
 }
 
 @keyframes mono-fade {
-  0% { opacity: 0; transform: scale(0.8); }
-  40% { opacity: 1; transform: scale(1); }
-  80% { opacity: 1; }
-  100% { opacity: 0; }
+  0% {
+    opacity: 0;
+    transform: scale(0.84);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }

@@ -2,7 +2,9 @@ import { useState, useEffect, useCallback } from 'react'
 
 export function useTheme() {
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('ja-theme') || 'dark'
+    const saved = localStorage.getItem('ja-theme')
+    if (saved === 'light' || saved === 'dark') return saved
+    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
   })
 
   useEffect(() => {
@@ -11,7 +13,6 @@ export function useTheme() {
   }, [theme])
 
   const toggle = useCallback(() => {
-    // Flash overlay effect
     const flash = document.querySelector('.theme-flash')
     if (flash) {
       flash.style.opacity = '1'

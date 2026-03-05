@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -28,11 +28,14 @@ export default function About() {
   const sectionRef = useRef(null)
   const statsRef = useRef([])
 
-  const stats = [
-    t('about.stats.years', { returnObjects: true }),
-    t('about.stats.projects', { returnObjects: true }),
-    t('about.stats.countries', { returnObjects: true }),
-  ]
+  const stats = useMemo(
+    () => [
+      t('about.stats.years', { returnObjects: true }),
+      t('about.stats.projects', { returnObjects: true }),
+      t('about.stats.countries', { returnObjects: true }),
+    ],
+    [t],
+  )
 
   useEffect(() => {
     const section = sectionRef.current

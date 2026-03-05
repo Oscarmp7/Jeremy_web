@@ -77,7 +77,6 @@
   font-family: var(--font-hud);
   font-size: 12px;
   letter-spacing: 0.2em;
-  cursor: none;
   transition: background 0.2s ease;
   justify-self: start;
   margin-top: 8px;
