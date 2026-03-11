@@ -1,65 +1,29 @@
-import { useEffect, useState } from 'react'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useTranslation } from 'react-i18next'
-import './index.css'
-
+import { useState } from 'react'
+import { Routes, Route } from 'react-router'
+import MainLayout from './layouts/MainLayout'
+import HomePage from './pages/HomePage'
+import ProjectsPage from './pages/ProjectsPage'
+import ProjectDetailPage from './pages/ProjectDetailPage'
+import StudioPage from './pages/StudioPage'
+import ContactPage from './pages/ContactPage'
 import Loader from './components/Loader/Loader'
-import Cursor from './components/ui/Cursor'
-import FilmGrain from './components/ui/FilmGrain'
-import Nav from './components/Nav/Nav'
-import Hero from './components/Hero/Hero'
-import Marquee from './components/Marquee/Marquee'
-import Work from './components/Work/Work'
-import About from './components/About/About'
-import Services from './components/Services/Services'
-import Contact from './components/Contact/Contact'
-import Footer from './components/Footer/Footer'
 
 export default function App() {
   const [loaded, setLoaded] = useState(false)
-  const { i18n } = useTranslation()
-
-  useEffect(() => {
-    if (!loaded) return
-
-    const raf = requestAnimationFrame(() => ScrollTrigger.refresh())
-    return () => cancelAnimationFrame(raf)
-  }, [loaded])
-
-  useEffect(() => {
-    if (!loaded) return
-
-    const timeout = window.setTimeout(() => {
-      ScrollTrigger.refresh()
-    }, 190)
-
-    return () => window.clearTimeout(timeout)
-  }, [loaded, i18n.language])
 
   return (
     <>
-      <div
-        className="theme-flash"
-        aria-hidden="true"
-      />
-      <div className="lang-flash" aria-hidden="true" />
-
-      <Loader onComplete={() => setLoaded(true)} />
-
-      <Cursor />
-      <FilmGrain />
-
-      <div className="app-shell">
-        <Nav />
-        <main>
-          <Hero ready={loaded} />
-          <Marquee />
-          <Work />
-          <About />
-          <Services />
-          <Contact />
-        </main>
-        <Footer />
+      {!loaded && <Loader onComplete={() => setLoaded(true)} />}
+      <div className={`app-shell ${loaded ? 'app-shell--ready' : ''}`}>
+        <Routes>
+          <Route element={<MainLayout />}>
+            <Route index element={<HomePage />} />
+            <Route path="proyectos" element={<ProjectsPage />} />
+            <Route path="proyectos/:slug" element={<ProjectDetailPage />} />
+            <Route path="studio" element={<StudioPage />} />
+            <Route path="contacto" element={<ContactPage />} />
+          </Route>
+        </Routes>
       </div>
     </>
   )
