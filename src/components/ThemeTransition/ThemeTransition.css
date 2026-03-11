@@ -1,0 +1,9 @@
+.theme-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--curtain);
+  display: none;
+  will-change: transform;
+  pointer-events: none;
+}

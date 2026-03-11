@@ -1,0 +1,213 @@
+.nav {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 60;
+  padding: 18px 0;
+  transition:
+    background-color 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    backdrop-filter 220ms ease;
+}
+
+.nav--scrolled {
+  background: rgba(5, 8, 14, 0.78);
+  border-bottom: 1px solid rgba(111, 129, 158, 0.16);
+  backdrop-filter: blur(18px);
+}
+
+.nav__inner {
+  width: 100%;
+  padding: 0 var(--layout-pad);
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 28px;
+}
+
+.nav__brand {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  text-decoration: none;
+}
+
+.nav__brand-name {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 2.8vw, 38px);
+  letter-spacing: 0.04em;
+  color: var(--text);
+  line-height: 0.9;
+}
+
+.nav__brand-sub {
+  font-family: var(--font-hud);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.nav__links {
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.nav__link {
+  font-family: var(--font-hud);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.nav__link:hover,
+.nav__link:focus-visible {
+  color: var(--text);
+}
+
+.nav__cta-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.nav__meta {
+  font-family: var(--font-hud);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.nav__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text);
+  text-decoration: none;
+  font-family: var(--font-hud);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.nav__cta:hover,
+.nav__cta:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.nav__menu {
+  display: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(111, 129, 158, 0.18);
+  background: rgba(8, 13, 21, 0.72);
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex-direction: column;
+}
+
+.nav__menu span {
+  width: 18px;
+  height: 1px;
+  background: var(--text);
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+
+.nav__menu--open span:nth-child(1) {
+  transform: translateY(5px) rotate(45deg);
+}
+
+.nav__menu--open span:nth-child(2) {
+  opacity: 0;
+}
+
+.nav__menu--open span:nth-child(3) {
+  transform: translateY(-5px) rotate(-45deg);
+}
+
+.nav__mobile {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  background: rgba(5, 8, 14, 0.96);
+  backdrop-filter: blur(18px);
+}
+
+.nav__mobile-inner {
+  min-height: 100%;
+  padding: 140px var(--layout-pad) 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 16px;
+}
+
+.nav__mobile-link {
+  font-family: var(--font-display);
+  font-size: clamp(44px, 12vw, 74px);
+  line-height: 0.9;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.nav__mobile-cta {
+  margin-top: 18px;
+  text-decoration: none;
+  color: var(--text);
+  font-family: var(--font-hud);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 14px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.nav__mobile-note {
+  margin-top: 20px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+@media (max-width: 1120px) {
+  .nav__links,
+  .nav__meta,
+  .nav__cta {
+    display: none;
+  }
+
+  .nav__menu {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 720px) {
+  .nav {
+    padding: 14px 0;
+  }
+
+  .nav__brand-name {
+    font-size: 28px;
+  }
+}
