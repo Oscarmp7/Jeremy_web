@@ -17,7 +17,7 @@ export default function App() {
       <div className={`app-shell ${loaded ? 'app-shell--ready' : ''}`}>
         <Routes>
           <Route element={<MainLayout />}>
-            <Route index element={<HomePage />} />
+            <Route index element={<HomePage ready={loaded} />} />
             <Route path="proyectos" element={<ProjectsPage />} />
             <Route path="proyectos/:slug" element={<ProjectDetailPage />} />
             <Route path="studio" element={<StudioPage />} />
