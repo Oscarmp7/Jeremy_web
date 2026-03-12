@@ -10,8 +10,6 @@ export default function ProjectShowcase() {
   const prev = () => setActiveIndex((i) => (i - 1 + total) % total)
   const next = () => setActiveIndex((i) => (i + 1) % total)
 
-  const active = showcaseProjects[activeIndex]
-
   return (
     <section className="showcase">
       <h1 className="showcase__heading">PROYECTOS</h1>

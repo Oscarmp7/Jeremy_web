@@ -7,26 +7,55 @@ import './Nav.css'
 const noop = () => {}
 
 export default function Nav({ theme = 'dark', toggleTheme = noop }) {
-  const headerRef = useRef(null)
   const mobileRef = useRef(null)
   const location = useLocation()
+  const isHome = location.pathname === '/'
   const [scrolled, setScrolled] = useState(false)
+  const [homeOnDarkStage, setHomeOnDarkStage] = useState(true)
   const [menuOpen, setMenuOpen] = useState(false)
+  const navLinks = siteContent.nav
+  const desktopLinks = [{ href: '/', label: siteContent.brand.name, kind: 'brand' }, ...navLinks]
 
-  // Scroll detection
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (!isHome) {
+      return undefined
+    }
+
+    const syncHomeStage = () => {
+      const homeEnd = document.querySelector('.home-end')
+      if (!homeEnd) {
+        setHomeOnDarkStage(true)
+        return
+      }
+
+      const finalFrameTop = homeEnd.getBoundingClientRect().top
+      const finalFrameThreshold = window.innerHeight * 0.05
+      setHomeOnDarkStage(finalFrameTop > finalFrameThreshold)
+    }
+
+    syncHomeStage()
+    window.addEventListener('scroll', syncHomeStage, { passive: true })
+    window.addEventListener('resize', syncHomeStage)
+
+    return () => {
+      window.removeEventListener('scroll', syncHomeStage)
+      window.removeEventListener('resize', syncHomeStage)
+    }
+  }, [isHome])
+
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
+    return () => {
+      document.body.style.overflow = ''
+    }
   }, [menuOpen])
 
-  // GSAP stagger animation for mobile links
   useEffect(() => {
     if (menuOpen && mobileRef.current) {
       const links = mobileRef.current.querySelectorAll('.nav__mobile-link')
@@ -42,77 +71,90 @@ export default function Nav({ theme = 'dark', toggleTheme = noop }) {
 
   const closeMenu = useCallback(() => setMenuOpen(false), [])
 
+  const isLinkActive = useCallback((href) => {
+    if (href === '/') {
+      return location.pathname === href
+    }
+
+    if (href === '/proyectos') {
+      return location.pathname.startsWith('/proyectos')
+    }
+
+    return location.pathname === href
+  }, [location.pathname])
+
+  const navClassName = `nav${isHome ? ' nav--home' : ''}${
+    isHome && homeOnDarkStage ? ' nav--home-stage' : ''
+  }${scrolled && !isHome ? ' nav--scrolled' : ''}`
+
   return (
     <>
-      <header
-        ref={headerRef}
-        className={`nav${scrolled ? ' nav--scrolled' : ''}`}
-      >
+      <header className={navClassName}>
         <div className="nav__inner">
-          {/* Left: Brand */}
-          <Link to="/" className="nav__brand">
-            {siteContent.brand.name}
-          </Link>
+          <div className="nav__desktop-shell">
+            <nav className="nav__grid" aria-label="Navegacion principal">
+              {desktopLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className={`nav__item nav__item--${link.kind ?? 'link'}${
+                    isLinkActive(link.href) ? ' nav__item--active' : ''
+                  }`}
+                  aria-current={isLinkActive(link.href) ? 'page' : undefined}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
 
-          {/* Center: Page links */}
-          <nav className="nav__links" aria-label="Navegación principal">
-            {siteContent.nav.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href}
-                className={`nav__link${
-                  location.pathname === link.href ? ' nav__link--active' : ''
-                }`}
+            <div className="nav__theme-dock">
+              <button
+                type="button"
+                className="nav__theme-toggle"
+                onClick={toggleTheme}
+                aria-label={`Tema actual ${theme}. Cambiar a ${theme === 'dark' ? 'light' : 'dark'}`}
               >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+                <span className={`nav__theme-option${theme === 'dark' ? ' nav__theme-option--active' : ''}`}>
+                  Dark
+                </span>
+                <span className="nav__theme-slash" aria-hidden="true">
+                  /
+                </span>
+                <span className={`nav__theme-option${theme === 'light' ? ' nav__theme-option--active' : ''}`}>
+                  Light
+                </span>
+              </button>
+            </div>
 
-          {/* Right: Actions */}
-          <div className="nav__actions">
-            <button
-              type="button"
-              className="nav__theme-toggle"
-              onClick={toggleTheme}
-            >
-              {theme === 'dark' ? 'Light' : 'Dark'}
-            </button>
-
-            <a
-              href={siteContent.brand.whatsappHref}
-              className="nav__cta"
-              target="_blank"
-              rel="noreferrer"
-            >
-              WhatsApp
-            </a>
-
-            <button
-              type="button"
-              className={`nav__menu${menuOpen ? ' nav__menu--open' : ''}`}
-              onClick={() => setMenuOpen((v) => !v)}
-              aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
-              aria-expanded={menuOpen}
-            >
-              <span />
-              <span />
-              <span />
-            </button>
+            <div className="nav__mobile-actions">
+              <button
+                type="button"
+                className={`nav__menu${menuOpen ? ' nav__menu--open' : ''}`}
+                onClick={() => setMenuOpen((value) => !value)}
+                aria-label={menuOpen ? 'Cerrar menu' : 'Abrir menu'}
+                aria-expanded={menuOpen}
+              >
+                <span />
+                <span />
+                <span />
+              </button>
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Mobile fullscreen overlay */}
       {menuOpen && (
         <div
           className="nav__mobile"
           ref={mobileRef}
           role="dialog"
           aria-modal="true"
-          aria-label="Menú móvil"
+          aria-label="Menu movil"
         >
           <div className="nav__mobile-inner">
+            <Link to="/" className="nav__mobile-link nav__mobile-link--brand" onClick={closeMenu}>
+              Manzana Cuatro
+            </Link>
             {siteContent.nav.map((link) => (
               <Link
                 key={link.href}
@@ -129,7 +171,7 @@ export default function Nav({ theme = 'dark', toggleTheme = noop }) {
               className="nav__mobile-theme"
               onClick={toggleTheme}
             >
-              {theme === 'dark' ? 'Light mode' : 'Dark mode'}
+              {theme === 'dark' ? 'Cambiar a light' : 'Cambiar a dark'}
             </button>
 
             <a

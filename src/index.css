@@ -154,7 +154,7 @@ img {
 
 .app-shell {
   opacity: 0;
-  transition: opacity 0.5s var(--ease-out);
+  transition: opacity 1.05s var(--ease-out);
 }
 
 .app-shell--ready {

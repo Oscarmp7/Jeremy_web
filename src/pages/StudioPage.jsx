@@ -84,6 +84,8 @@ export default function StudioPage() {
 
   return (
     <div className="page page--studio" ref={sectionRef}>
+      <h1 className="studio__sr-title">{about.eyebrow}</h1>
+
       {/* ── Section 1: Manifesto ── */}
       <section className="manifesto">
         <p className="manifesto__text">

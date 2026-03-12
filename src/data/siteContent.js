@@ -101,10 +101,16 @@ export const siteContent = {
     domain: 'manzanacuatro.com',
   },
   nav: [
-    { label: 'Inicio', href: '/' },
     { label: 'Proyectos', href: '/proyectos' },
-    { label: 'Studio', href: '/studio' },
+    { label: 'Estudio', href: '/studio' },
     { label: 'Contacto', href: '/contacto' },
+  ],
+  clients: [
+    { name: 'La Bodega' },
+    { name: 'Shibuya' },
+    { name: 'Changan Dominicana' },
+    { name: 'Farma Extra' },
+    { name: 'Porsche Center Santo Domingo' },
   ],
   hero: {
     eyebrow: 'Producción audiovisual / RD',
@@ -134,7 +140,7 @@ export const siteContent = {
     modalCta: 'Solicita una cotización ahora',
   },
   about: {
-    eyebrow: 'Studio',
+    eyebrow: 'Estudio',
     title: 'Pasión por elevar marcas a través de los audiovisuales.',
     text:
       'Manzana Cuatro trabaja como aliado audiovisual para agencias, empresas, creadores y marcas que necesitan una producción cuidada, moderna y confiable sin pasar por estructuras pesadas.',
@@ -169,7 +175,7 @@ export const siteContent = {
   },
   contact: {
     eyebrow: 'Contacto',
-    title: 'Comienza aquí.',
+    title: 'Comienza tu historia',
     text:
       'Si tienes una campaña, una idea o una marca que necesita una ejecución visual más fuerte, conversemos por la vía más directa.',
     primaryCta: { label: 'Escríbenos por WhatsApp', href: 'https://wa.me/18498633817' },

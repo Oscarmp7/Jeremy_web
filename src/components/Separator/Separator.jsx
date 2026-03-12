@@ -8,21 +8,24 @@ export default function Separator() {
   const ref = useRef(null)
 
   useEffect(() => {
-    gsap.fromTo(ref.current,
+    const element = ref.current
+    if (!element) return undefined
+
+    gsap.fromTo(element,
       { scaleX: 0 },
       {
         scaleX: 1,
         duration: 0.8,
         ease: 'power3.out',
         scrollTrigger: {
-          trigger: ref.current,
+          trigger: element,
           start: 'top 90%',
           once: true,
         },
       }
     )
     return () => ScrollTrigger.getAll().forEach(t => {
-      if (t.trigger === ref.current) t.kill()
+      if (t.trigger === element) t.kill()
     })
   }, [])
 

@@ -89,7 +89,7 @@ export default function ContactPage() {
     <section className="contact" ref={sectionRef}>
       {/* Title */}
       <div className="contact__title-wrap">
-        <h1 className="contact__title">COMIENZA TU HISTORIA</h1>
+        <h1 className="contact__title">{contact.title}</h1>
       </div>
 
       {/* Subtitle */}

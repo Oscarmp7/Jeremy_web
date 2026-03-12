@@ -1,0 +1,44 @@
+import { siteContent } from '../../data/siteContent'
+import './HomeEndFrame.css'
+
+export default function HomeEndFrame() {
+  return (
+    <section className="home-end">
+      <div className="home-end__center">
+        <span className="home-end__eyebrow">{siteContent.contact.eyebrow}</span>
+        <a
+          href={siteContent.contact.primaryCta.href}
+          className="home-end__title"
+          target="_blank"
+          rel="noreferrer"
+        >
+          {siteContent.contact.title}
+        </a>
+        <p className="home-end__text">{siteContent.contact.text}</p>
+      </div>
+
+      <div className="home-end__footer-links">
+        <a href={`mailto:${siteContent.brand.email}`} className="home-end__link">
+          {siteContent.brand.email}
+        </a>
+        <a
+          href={siteContent.brand.instagramHref}
+          className="home-end__link"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Instagram
+        </a>
+        <a
+          href={siteContent.brand.whatsappHref}
+          className="home-end__link"
+          target="_blank"
+          rel="noreferrer"
+        >
+          WhatsApp
+        </a>
+        <span className="home-end__legal">© Manzana Cuatro 2026</span>
+      </div>
+    </section>
+  )
+}
