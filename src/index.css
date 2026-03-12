@@ -1,3 +1,10 @@
+/* ============================================
+   Manzana Cuatro — Global Styles
+   Amber Minimal Cinematic Aesthetic
+   ============================================ */
+
+/* --- Font Faces --- */
+
 @font-face {
   font-family: 'Bebas Neue';
   src: url('/fonts/BebasNeue-Regular.woff2') format('woff2');
@@ -13,19 +20,41 @@
 }
 
 @font-face {
+  font-family: 'Space Mono';
+  src: url('/fonts/SpaceMono-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cormorant Garamond';
+  src: url('/fonts/CormorantGaramond-Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
   font-family: 'Inter';
   src: url('/fonts/Inter-Variable.woff2') format('woff2-variations');
   font-weight: 100 900;
   font-display: swap;
 }
 
+/* --- Tailwind --- */
+
 @import "tailwindcss";
+
+/* --- Tailwind Theme --- */
 
 @theme {
   --font-display: 'Bebas Neue', system-ui, sans-serif;
   --font-hud: 'Space Mono', monospace;
   --font-body: 'Inter', system-ui, sans-serif;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
 }
+
+/* --- CSS Custom Properties --- */
 
 :root,
 [data-theme="dark"] {
@@ -40,10 +69,10 @@
   --curtain: #050505;
   --overlay: rgba(0, 0, 0, 0.6);
 
-  /* Non-color vars */
   --font-display: 'Bebas Neue', Impact, sans-serif;
   --font-hud: 'Space Mono', 'Courier New', monospace;
   --font-body: 'Inter', system-ui, sans-serif;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
   --layout-max: 1320px;
   --layout-pad: clamp(18px, 4vw, 48px);
   --nav-height: 96px;
@@ -63,6 +92,8 @@
   --overlay: rgba(255, 255, 255, 0.6);
 }
 
+/* --- Reset --- */
+
 *,
 *::before,
 *::after {
@@ -71,18 +102,18 @@
   padding: 0;
 }
 
+/* --- Base Elements --- */
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--nav-height) + 16px);
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-body);
 }
 
 body {
   min-height: 100vh;
   background: var(--bg);
   color: var(--text);
+  font-family: var(--font-body);
   overflow-x: hidden;
 }
 
@@ -99,15 +130,6 @@ main > section {
   scroll-margin-top: calc(var(--nav-height) + 16px);
 }
 
-.app-shell {
-  opacity: 0;
-  transition: opacity 260ms var(--ease-out);
-}
-
-.app-shell--ready {
-  opacity: 1;
-}
-
 a,
 button,
 input,
@@ -120,6 +142,7 @@ select {
 button {
   background: none;
   border: 0;
+  cursor: pointer;
 }
 
 img {
@@ -127,138 +150,83 @@ img {
   display: block;
 }
 
+/* --- App Shell (loader reveal) --- */
+
+.app-shell {
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-out);
+}
+
+.app-shell--ready {
+  opacity: 1;
+}
+
+/* --- Page offset for fixed nav --- */
+
+.page {
+  padding-top: var(--nav-height);
+}
+
+/* --- Separator --- */
+
+.separator {
+  height: 1px;
+  width: 100%;
+  background: var(--separator);
+}
+
+/* --- Button Styles --- */
+
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 48px;
-  padding: 0 20px;
-  border-radius: 999px;
+  padding: 12px 24px;
   border: 1px solid transparent;
   text-decoration: none;
-  font-family: var(--font-hud);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  transition:
-    transform 180ms ease,
-    border-color 180ms ease,
-    color 180ms ease,
-    background-color 180ms ease;
-}
-
-.button:hover,
-.button:focus-visible {
-  transform: translateY(-1px);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 }
 
 .button--primary {
   background: var(--accent);
-  border-color: rgba(144, 182, 255, 0.45);
-  color: #f9fbff;
-  box-shadow: 0 14px 30px rgba(47, 120, 255, 0.24);
+  color: #ffffff;
+  border-radius: 2px;
 }
 
 .button--primary:hover,
 .button--primary:focus-visible {
-  background: #3b84ff;
+  background: var(--accent-hover);
 }
 
 .button--ghost {
-  background: rgba(255, 255, 255, 0.02);
-  border-color: var(--separator);
+  background: transparent;
+  border: 1px solid var(--separator);
   color: var(--text);
+  border-radius: 2px;
 }
 
 .button--ghost:hover,
 .button--ghost:focus-visible {
-  border-color: rgba(144, 182, 255, 0.4);
-  background: rgba(47, 120, 255, 0.08);
+  border-color: var(--text);
 }
 
-.footer {
-  border-top: 1px solid var(--separator);
-  background: rgba(8, 12, 20, 0.9);
-}
-
-.footer__inner {
-  width: 100%;
-  padding: 26px var(--layout-pad) 34px;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
-  align-items: center;
-}
-
-.footer__brand,
-.footer__links {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.footer__brand {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-}
-
-.footer__name {
-  font-family: var(--font-display);
-  font-size: 30px;
-  line-height: 0.9;
-  letter-spacing: 0.04em;
-}
-
-.footer__location,
-.footer__copy,
-.footer__link {
-  color: var(--text-muted);
-  font-family: var(--font-hud);
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-}
-
-.footer__copy {
-  text-align: center;
-}
-
-.footer__links {
-  justify-content: flex-end;
-}
-
-.footer__link {
-  text-decoration: none;
-}
-
-.footer__link:hover,
-.footer__link:focus-visible {
-  color: var(--text);
-}
+/* --- Focus & Selection --- */
 
 :focus-visible {
-  outline: 2px solid rgba(144, 182, 255, 0.9);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 
 ::selection {
-  background: rgba(47, 120, 255, 0.88);
-  color: #fdfefe;
+  background: var(--accent);
+  color: #ffffff;
 }
 
-@media (max-width: 960px) {
-  .footer__inner {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-
-  .footer__brand,
-  .footer__links {
-    justify-content: center;
-    align-items: center;
-  }
-}
+/* --- Reduced Motion --- */
 
 @media (prefers-reduced-motion: reduce) {
   * {
