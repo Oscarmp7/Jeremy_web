@@ -115,7 +115,7 @@ export default function ProjectDetailPage() {
   const nextProject = showcaseProjects[(projectIndex + 1) % total]
 
   return (
-    <div className="page page--project-detail">
+    <div className="page--project-detail">
       {/* Hero */}
       <section className="project-detail__hero">
         <img

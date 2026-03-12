@@ -37,36 +37,15 @@ export default function HomePage({ ready }) {
   }, [])
 
   return (
-    <div className="page page--home">
+    <div className="page--home">
       <Hero ready={ready} />
       <Marquee />
       <ProjectsPreview />
       <Separator />
 
-      <section
-        ref={ctaRef}
-        className="home-cta"
-        style={{
-          padding: '6rem var(--layout-pad)',
-          textAlign: 'center',
-        }}
-      >
-        <h2
-          className="home-cta__title"
-          style={{
-            fontFamily: "'Bebas Neue', sans-serif",
-            fontSize: 'clamp(2rem, 6vw, 4.5rem)',
-            color: 'var(--text)',
-            margin: 0,
-          }}
-        >
-          COMIENZA TU HISTORIA
-        </h2>
-        <Link
-          to="/contacto"
-          className="button button--primary home-cta__button"
-          style={{ marginTop: '2rem', display: 'inline-block' }}
-        >
+      <section ref={ctaRef} className="home-cta">
+        <h2 className="home-cta__title">COMIENZA TU HISTORIA</h2>
+        <Link to="/contacto" className="button button--primary home-cta__button">
           Hablemos &rarr;
         </Link>
       </section>
