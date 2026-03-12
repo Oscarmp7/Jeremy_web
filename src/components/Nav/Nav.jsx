@@ -1,69 +1,84 @@
-import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router'
+import { useEffect, useRef, useState, useCallback } from 'react'
+import { Link, useLocation } from 'react-router'
+import gsap from 'gsap'
 import { siteContent } from '../../data/siteContent'
 import './Nav.css'
 
-const NAV_ID = 'site-primary-nav'
+const noop = () => {}
 
-export default function Nav() {
+export default function Nav({ theme = 'dark', toggleTheme = noop }) {
   const headerRef = useRef(null)
+  const mobileRef = useRef(null)
+  const location = useLocation()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
+  // Scroll detection
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  useEffect(() => {
-    const updateNavHeight = () => {
-      const height = headerRef.current?.offsetHeight
-      if (!height) return
-      document.documentElement.style.setProperty('--nav-height', `${Math.ceil(height)}px`)
-    }
-
-    updateNavHeight()
-    window.addEventListener('resize', updateNavHeight)
-
-    const observer = typeof ResizeObserver !== 'undefined'
-      ? new ResizeObserver(updateNavHeight)
-      : null
-
-    if (observer && headerRef.current) observer.observe(headerRef.current)
-
-    return () => {
-      window.removeEventListener('resize', updateNavHeight)
-      observer?.disconnect()
-    }
-  }, [])
-
+  // Lock body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : ''
-    return () => {
-      document.body.style.overflow = ''
+    return () => { document.body.style.overflow = '' }
+  }, [menuOpen])
+
+  // GSAP stagger animation for mobile links
+  useEffect(() => {
+    if (menuOpen && mobileRef.current) {
+      const links = mobileRef.current.querySelectorAll('.nav__mobile-link')
+      gsap.from(links, {
+        opacity: 0,
+        y: 30,
+        stagger: 0.05,
+        duration: 0.4,
+        ease: 'power3.out',
+      })
     }
   }, [menuOpen])
 
+  const closeMenu = useCallback(() => setMenuOpen(false), [])
+
   return (
     <>
-      <header ref={headerRef} className={`nav ${scrolled ? 'nav--scrolled' : ''}`}>
+      <header
+        ref={headerRef}
+        className={`nav${scrolled ? ' nav--scrolled' : ''}`}
+      >
         <div className="nav__inner">
+          {/* Left: Brand */}
           <Link to="/" className="nav__brand">
-            <span className="nav__brand-name">{siteContent.brand.name}</span>
-            <span className="nav__brand-sub">Studio / RD</span>
+            {siteContent.brand.name}
           </Link>
 
-          <nav id={NAV_ID} className="nav__links" aria-label="Navegación principal">
-            {siteContent.nav.map(link => (
-              <Link key={link.href} to={link.href} className="nav__link">
+          {/* Center: Page links */}
+          <nav className="nav__links" aria-label="Navegación principal">
+            {siteContent.nav.map((link) => (
+              <Link
+                key={link.href}
+                to={link.href}
+                className={`nav__link${
+                  location.pathname === link.href ? ' nav__link--active' : ''
+                }`}
+              >
                 {link.label}
               </Link>
             ))}
           </nav>
 
-          <div className="nav__cta-wrap">
-            <div className="nav__meta">Disponible para campañas</div>
+          {/* Right: Actions */}
+          <div className="nav__actions">
+            <button
+              type="button"
+              className="nav__theme-toggle"
+              onClick={toggleTheme}
+            >
+              {theme === 'dark' ? 'Light' : 'Dark'}
+            </button>
+
             <a
               href={siteContent.brand.whatsappHref}
               className="nav__cta"
@@ -72,13 +87,13 @@ export default function Nav() {
             >
               WhatsApp
             </a>
+
             <button
               type="button"
-              className={`nav__menu ${menuOpen ? 'nav__menu--open' : ''}`}
-              onClick={() => setMenuOpen(value => !value)}
+              className={`nav__menu${menuOpen ? ' nav__menu--open' : ''}`}
+              onClick={() => setMenuOpen((v) => !v)}
               aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
               aria-expanded={menuOpen}
-              aria-controls={NAV_ID}
             >
               <span />
               <span />
@@ -88,29 +103,44 @@ export default function Nav() {
         </div>
       </header>
 
+      {/* Mobile fullscreen overlay */}
       {menuOpen && (
-        <div className="nav__mobile" role="dialog" aria-modal="true" aria-label="Menú móvil">
+        <div
+          className="nav__mobile"
+          ref={mobileRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menú móvil"
+        >
           <div className="nav__mobile-inner">
-            {siteContent.nav.map(link => (
+            {siteContent.nav.map((link) => (
               <Link
                 key={link.href}
                 to={link.href}
                 className="nav__mobile-link"
-                onClick={() => setMenuOpen(false)}
+                onClick={closeMenu}
               >
                 {link.label}
               </Link>
             ))}
+
+            <button
+              type="button"
+              className="nav__mobile-theme"
+              onClick={toggleTheme}
+            >
+              {theme === 'dark' ? 'Light mode' : 'Dark mode'}
+            </button>
+
             <a
               href={siteContent.brand.whatsappHref}
               className="nav__mobile-cta"
               target="_blank"
               rel="noreferrer"
-              onClick={() => setMenuOpen(false)}
+              onClick={closeMenu}
             >
-              Escríbenos por WhatsApp
+              WhatsApp
             </a>
-            <p className="nav__mobile-note">{siteContent.brand.email}</p>
           </div>
         </div>
       )}
