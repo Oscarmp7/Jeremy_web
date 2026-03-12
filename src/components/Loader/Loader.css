@@ -19,7 +19,7 @@
   align-content: center;
   text-align: center;
   gap: 0.6rem;
-  min-height: clamp(21rem, 42svh, 29rem);
+  min-height: clamp(21rem, 42dvh, 29rem);
 }
 
 .loader__meta {
@@ -58,7 +58,7 @@
 
 @media (max-width: 900px) {
   .loader__title-card {
-    min-height: clamp(18rem, 38svh, 24rem);
+    min-height: clamp(18rem, 38dvh, 24rem);
   }
 
   .loader__wordmark {

@@ -1,14 +1,16 @@
 .home-reel {
   position: relative;
-  min-height: calc(var(--reel-frames) * 100svh);
+  min-height: calc(var(--reel-frames) * 100vh);
+  min-height: calc(var(--reel-frames) * 100dvh);
   --band-y: 100%;
-  --title-step: clamp(21rem, 42svh, 29rem);
+  --title-step: clamp(21rem, 42dvh, 29rem);
 }
 
 .home-reel__sticky {
   position: sticky;
   top: 0;
-  height: 100svh;
+  height: 100vh;
+  height: 100dvh;
   overflow: clip;
   background: #000;
 }
@@ -197,7 +199,7 @@
 
 @media (max-width: 900px) {
   .home-reel {
-    --title-step: clamp(18rem, 38svh, 24rem);
+    --title-step: clamp(18rem, 38dvh, 24rem);
   }
 
   .home-reel__title-card {

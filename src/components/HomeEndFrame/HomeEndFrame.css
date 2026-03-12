@@ -1,5 +1,6 @@
 .home-end {
-  min-height: 100svh;
+  min-height: 100vh;
+  min-height: 100dvh;
   background: var(--bg);
   color: var(--text);
   display: grid;
