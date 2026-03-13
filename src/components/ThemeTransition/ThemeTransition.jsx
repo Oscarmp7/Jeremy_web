@@ -3,50 +3,68 @@ import gsap from 'gsap'
 import './ThemeTransition.css'
 
 export default function useThemeTransition(onMidpoint) {
-  const gradeRef = useRef(null)
-  const glowRef = useRef(null)
+  const veilRef = useRef(null)
+  const orbRef = useRef(null)
   const animatingRef = useRef(false)
 
   const play = useCallback(() => {
     if (animatingRef.current) return
     animatingRef.current = true
 
-    const sweepTargets = [gradeRef.current, glowRef.current].filter(Boolean)
+    const transitionTargets = [veilRef.current, orbRef.current].filter(Boolean)
     const tl = gsap.timeline({
       onComplete: () => {
         animatingRef.current = false
       },
     })
 
-    tl.set(sweepTargets, { xPercent: 100, display: 'block' })
-      .to(gradeRef.current, {
-        xPercent: 0,
-        duration: 0.28,
-        ease: 'power4.inOut',
+    tl.set(transitionTargets, { display: 'block' })
+      .set(veilRef.current, {
+        opacity: 0,
+        '--theme-blur': '0px',
       })
-      .to(glowRef.current, {
-        xPercent: 0,
-        duration: 0.34,
-        ease: 'power4.inOut',
+      .set(orbRef.current, {
+        opacity: 0,
+        scale: 0.08,
+        transformOrigin: '50% 50%',
+      })
+      .to(veilRef.current, {
+        opacity: 1,
+        '--theme-blur': '16px',
+        duration: 0.22,
+        ease: 'power2.out',
       }, 0)
-      .call(() => onMidpoint?.())
-      .to(gradeRef.current, {
-        xPercent: -100,
-        duration: 0.3,
-        ease: 'power4.inOut',
+      .to(orbRef.current, {
+        opacity: 1,
+        scale: 0.2,
+        duration: 0.22,
+        ease: 'power2.out',
       })
-      .to(glowRef.current, {
-        xPercent: -120,
-        duration: 0.36,
+      .to(orbRef.current, {
+        scale: 1,
+        duration: 0.52,
         ease: 'power4.inOut',
-      }, 0.06)
-      .set(sweepTargets, { display: 'none' })
+      }, 0.08)
+      .call(() => onMidpoint?.(), null, 0.3)
+      .to(veilRef.current, {
+        opacity: 0,
+        '--theme-blur': '0px',
+        duration: 0.46,
+        ease: 'power2.inOut',
+      }, 0.34)
+      .to(orbRef.current, {
+        opacity: 0,
+        scale: 1.08,
+        duration: 0.44,
+        ease: 'power3.out',
+      }, 0.34)
+      .set(transitionTargets, { display: 'none' })
   }, [onMidpoint])
 
   const curtain = (
     <>
-      <div ref={gradeRef} className="theme-grade" aria-hidden="true" />
-      <div ref={glowRef} className="theme-grade__glow" aria-hidden="true" />
+      <div ref={veilRef} className="theme-veil" aria-hidden="true" />
+      <div ref={orbRef} className="theme-orb" aria-hidden="true" />
     </>
   )
 

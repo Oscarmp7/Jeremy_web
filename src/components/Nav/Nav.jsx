@@ -134,9 +134,11 @@ export default function Nav({ theme = 'dark', toggleTheme = noop }) {
                 aria-label={menuOpen ? 'Cerrar menu' : 'Abrir menu'}
                 aria-expanded={menuOpen}
               >
-                <span />
-                <span />
-                <span />
+                <span className="nav__menu-box" aria-hidden="true">
+                  <span className="nav__menu-bar nav__menu-bar--top" />
+                  <span className="nav__menu-bar nav__menu-bar--middle" />
+                  <span className="nav__menu-bar nav__menu-bar--bottom" />
+                </span>
               </button>
             </div>
           </div>

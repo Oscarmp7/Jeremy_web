@@ -1,37 +1,38 @@
-.theme-grade,
-.theme-grade__glow {
+.theme-veil,
+.theme-orb {
   position: fixed;
-  inset: 0;
   z-index: 9999;
   display: none;
   pointer-events: none;
-  will-change: transform;
 }
 
-.theme-grade {
+.theme-veil {
+  inset: 0;
+  --theme-blur: 0px;
+  opacity: 0;
+  will-change: opacity, backdrop-filter;
+  background: color-mix(in srgb, var(--curtain) 20%, transparent);
+  backdrop-filter: blur(var(--theme-blur)) saturate(1.04);
+}
+
+.theme-orb {
+  top: 50%;
+  left: 50%;
+  width: 180vmax;
+  height: 180vmax;
+  opacity: 0;
+  border-radius: 50%;
+  will-change: transform, opacity, filter;
+  transform: translate(-50%, -50%) scale(0.08);
   background:
-    linear-gradient(90deg,
-      transparent 0%,
-      color-mix(in srgb, var(--curtain) 28%, transparent) 12%,
-      color-mix(in srgb, var(--curtain) 82%, transparent) 34%,
-      var(--curtain) 58%,
-      color-mix(in srgb, var(--curtain) 74%, transparent) 84%,
-      transparent 100%);
-  backdrop-filter: blur(12px) saturate(1.08);
-}
-
-.theme-grade__glow {
-  background:
-    linear-gradient(90deg,
-      transparent 0%,
-      color-mix(in srgb, #ffffff 12%, transparent) 26%,
-      color-mix(in srgb, #ffffff 4%, transparent) 48%,
-      transparent 72%);
-  opacity: 0.48;
-  mix-blend-mode: screen;
-}
-
-[data-theme="light"] .theme-grade__glow {
-  mix-blend-mode: multiply;
-  opacity: 0.12;
+    radial-gradient(circle,
+      color-mix(in srgb, var(--curtain) 98%, transparent) 0%,
+      color-mix(in srgb, var(--curtain) 92%, transparent) 18%,
+      color-mix(in srgb, var(--curtain) 78%, transparent) 36%,
+      color-mix(in srgb, var(--curtain) 36%, transparent) 56%,
+      transparent 74%);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--text) 9%, transparent),
+    0 0 140px color-mix(in srgb, var(--text) 10%, transparent);
+  filter: blur(14px);
 }
