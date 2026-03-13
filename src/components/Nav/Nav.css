@@ -8,6 +8,10 @@
   transition: background 0.3s, border-color 0.3s, backdrop-filter 0.3s;
 }
 
+.nav--menu-open {
+  z-index: 160;
+}
+
 .nav--scrolled {
   background: color-mix(in srgb, var(--bg) 84%, transparent);
   border-bottom-color: color-mix(in srgb, var(--separator) 85%, transparent);

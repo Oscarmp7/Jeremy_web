@@ -85,7 +85,7 @@ export default function Nav({ theme = 'dark', toggleTheme = noop }) {
 
   const navClassName = `nav${isHome ? ' nav--home' : ''}${
     isHome && homeOnDarkStage ? ' nav--home-stage' : ''
-  }${scrolled && !isHome ? ' nav--scrolled' : ''}`
+  }${scrolled && !isHome ? ' nav--scrolled' : ''}${menuOpen ? ' nav--menu-open' : ''}`
 
   return (
     <>
