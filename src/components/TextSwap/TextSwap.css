@@ -1,0 +1,89 @@
+.text-swap {
+  --swap-shift: 0.72em;
+  --swap-stagger: 28ms;
+  --swap-duration: 420ms;
+  --swap-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+  display: inline;
+  line-height: inherit;
+  color: inherit;
+}
+
+.text-swap__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.text-swap__visual {
+  display: inline;
+}
+
+.text-swap__segment {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.text-swap__word {
+  display: inline-flex;
+  white-space: nowrap;
+}
+
+.text-swap__space {
+  width: 0.28em;
+  flex: 0 0 auto;
+}
+
+.text-swap__char {
+  position: relative;
+  display: inline-grid;
+  overflow: clip;
+  padding-block: 0.08em 0.16em;
+}
+
+.text-swap__layer {
+  grid-area: 1 / 1;
+  display: block;
+  color: inherit;
+  transition:
+    transform var(--swap-duration) var(--swap-ease),
+    opacity var(--swap-duration) var(--swap-ease),
+    filter var(--swap-duration) var(--swap-ease);
+  transition-delay: calc(var(--char-index) * var(--swap-stagger));
+  will-change: transform, opacity, filter;
+}
+
+.text-swap__layer--primary {
+  transform: translateY(0);
+  opacity: 1;
+  filter: blur(0);
+}
+
+.text-swap__layer--secondary {
+  transform: translateY(var(--swap-shift));
+  opacity: 0;
+  filter: blur(0);
+}
+
+.text-swap--display {
+  --swap-shift: 0.82em;
+  --swap-stagger: 34ms;
+  --swap-duration: 560ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-swap__layer {
+    transition: none;
+    transition-delay: 0ms;
+  }
+
+  .text-swap__layer--secondary {
+    display: none;
+  }
+}

@@ -1,13 +1,25 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { siteContent } from '../../data/siteContent'
+import usePrefersReducedMotion from '../../hooks/usePrefersReducedMotion'
 import './Loader.css'
 
 export default function Loader({ onComplete }) {
   const loaderRef = useRef(null)
+  const reducedMotionHandledRef = useRef(false)
+  const reducedMotion = usePrefersReducedMotion()
   const [visible, setVisible] = useState(true)
 
   useEffect(() => {
+    if (reducedMotion) {
+      if (!reducedMotionHandledRef.current) {
+        reducedMotionHandledRef.current = true
+        onComplete?.()
+      }
+
+      return undefined
+    }
+
     const tl = gsap.timeline({
       onComplete: () => setVisible(false),
     })
@@ -21,8 +33,9 @@ export default function Loader({ onComplete }) {
       })
 
     return () => tl.kill()
-  }, [onComplete])
+  }, [onComplete, reducedMotion])
 
+  if (reducedMotion) return null
   if (!visible) return null
 
   return (

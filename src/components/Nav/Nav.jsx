@@ -2,14 +2,19 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import { Link, useLocation } from 'react-router'
 import gsap from 'gsap'
 import { siteContent } from '../../data/siteContent'
+import TextSwap from '../TextSwap/TextSwap'
+import usePrefersReducedMotion from '../../hooks/usePrefersReducedMotion'
 import './Nav.css'
 
 const noop = () => {}
 
 export default function Nav({ theme = 'dark', toggleTheme = noop }) {
   const mobileRef = useRef(null)
+  const menuButtonRef = useRef(null)
+  const previousFocusRef = useRef(null)
   const location = useLocation()
   const isHome = location.pathname === '/'
+  const reducedMotion = usePrefersReducedMotion()
   const [scrolled, setScrolled] = useState(false)
   const [homeOnDarkStage, setHomeOnDarkStage] = useState(true)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -58,6 +63,10 @@ export default function Nav({ theme = 'dark', toggleTheme = noop }) {
 
   useEffect(() => {
     if (menuOpen && mobileRef.current) {
+      if (reducedMotion) {
+        return undefined
+      }
+
       const links = mobileRef.current.querySelectorAll('.nav__mobile-link')
       gsap.from(links, {
         opacity: 0,
@@ -67,9 +76,15 @@ export default function Nav({ theme = 'dark', toggleTheme = noop }) {
         ease: 'power3.out',
       })
     }
-  }, [menuOpen])
+
+    return undefined
+  }, [menuOpen, reducedMotion])
 
   const closeMenu = useCallback(() => setMenuOpen(false), [])
+  const handleMobileThemeToggle = useCallback(() => {
+    toggleTheme()
+    closeMenu()
+  }, [closeMenu, toggleTheme])
 
   const isLinkActive = useCallback((href) => {
     if (href === '/') {
@@ -82,6 +97,79 @@ export default function Nav({ theme = 'dark', toggleTheme = noop }) {
 
     return location.pathname === href
   }, [location.pathname])
+
+  useEffect(() => {
+    if (!menuOpen || !mobileRef.current) {
+      return undefined
+    }
+
+    previousFocusRef.current = document.activeElement
+
+    const panel = mobileRef.current
+    const focusableSelector =
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    const getFocusable = () =>
+      Array.from(panel.querySelectorAll(focusableSelector)).filter(
+        (element) => !element.hasAttribute('disabled'),
+      )
+
+    const [firstFocusable] = getFocusable()
+    const menuButton = menuButtonRef.current
+
+    requestAnimationFrame(() => {
+      if (firstFocusable) {
+        firstFocusable.focus()
+        return
+      }
+
+      panel.focus()
+    })
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        closeMenu()
+        return
+      }
+
+      if (event.key !== 'Tab') {
+        return
+      }
+
+      const focusableElements = getFocusable()
+      const firstFocusable = focusableElements[0]
+      const lastFocusable = focusableElements[focusableElements.length - 1]
+
+      if (!firstFocusable || !lastFocusable) {
+        event.preventDefault()
+        panel.focus()
+        return
+      }
+
+      if (event.shiftKey && document.activeElement === firstFocusable) {
+        event.preventDefault()
+        lastFocusable.focus()
+        return
+      }
+
+      if (!event.shiftKey && document.activeElement === lastFocusable) {
+        event.preventDefault()
+        firstFocusable.focus()
+      }
+    }
+
+    panel.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      panel.removeEventListener('keydown', handleKeyDown)
+
+      if (previousFocusRef.current instanceof HTMLElement) {
+        previousFocusRef.current.focus()
+      } else if (menuButton) {
+        menuButton.focus()
+      }
+    }
+  }, [closeMenu, menuOpen])
 
   const navClassName = `nav${isHome ? ' nav--home' : ''}${
     isHome && homeOnDarkStage ? ' nav--home-stage' : ''
@@ -102,37 +190,20 @@ export default function Nav({ theme = 'dark', toggleTheme = noop }) {
                   }`}
                   aria-current={isLinkActive(link.href) ? 'page' : undefined}
                 >
-                  {link.label}
+                  {link.kind === 'brand' ? link.label : <TextSwap label={link.label} />}
                 </Link>
               ))}
             </nav>
 
-            <div className="nav__theme-dock">
-              <button
-                type="button"
-                className="nav__theme-toggle"
-                onClick={toggleTheme}
-                aria-label={`Tema actual ${theme}. Cambiar a ${theme === 'dark' ? 'light' : 'dark'}`}
-              >
-                <span className={`nav__theme-option${theme === 'dark' ? ' nav__theme-option--active' : ''}`}>
-                  Dark
-                </span>
-                <span className="nav__theme-slash" aria-hidden="true">
-                  /
-                </span>
-                <span className={`nav__theme-option${theme === 'light' ? ' nav__theme-option--active' : ''}`}>
-                  Light
-                </span>
-              </button>
-            </div>
-
             <div className="nav__mobile-actions">
               <button
+                ref={menuButtonRef}
                 type="button"
                 className={`nav__menu${menuOpen ? ' nav__menu--open' : ''}`}
                 onClick={() => setMenuOpen((value) => !value)}
                 aria-label={menuOpen ? 'Cerrar menu' : 'Abrir menu'}
                 aria-expanded={menuOpen}
+                aria-controls="nav-mobile-panel"
               >
                 <span className="nav__menu-box" aria-hidden="true">
                   <span className="nav__menu-bar nav__menu-bar--top" />
@@ -145,15 +216,39 @@ export default function Nav({ theme = 'dark', toggleTheme = noop }) {
         </div>
       </header>
 
+      <div className="nav__theme-dock" data-home-stage={isHome && homeOnDarkStage ? 'true' : 'false'}>
+        <button
+          type="button"
+          className="nav__theme-toggle"
+          onClick={toggleTheme}
+          aria-label={`Tema actual ${theme}. Cambiar a ${theme === 'dark' ? 'light' : 'dark'}`}
+        >
+          <span className={`nav__theme-option${theme === 'dark' ? ' nav__theme-option--active' : ''}`}>
+            Dark
+          </span>
+          <span className="nav__theme-slash" aria-hidden="true">
+            /
+          </span>
+          <span className={`nav__theme-option${theme === 'light' ? ' nav__theme-option--active' : ''}`}>
+            Light
+          </span>
+        </button>
+      </div>
+
       {menuOpen && (
         <div
+          id="nav-mobile-panel"
           className="nav__mobile"
           ref={mobileRef}
           role="dialog"
           aria-modal="true"
-          aria-label="Menu movil"
+          aria-labelledby="nav-mobile-title"
+          tabIndex={-1}
         >
           <div className="nav__mobile-inner">
+            <h2 id="nav-mobile-title" className="nav__mobile-title">
+              Menu
+            </h2>
             <Link to="/" className="nav__mobile-link nav__mobile-link--brand" onClick={closeMenu}>
               Manzana Cuatro
             </Link>
@@ -171,7 +266,7 @@ export default function Nav({ theme = 'dark', toggleTheme = noop }) {
             <button
               type="button"
               className="nav__mobile-theme"
-              onClick={toggleTheme}
+              onClick={handleMobileThemeToggle}
             >
               {theme === 'dark' ? 'Cambiar a light' : 'Cambiar a dark'}
             </button>

@@ -121,6 +121,23 @@ body {
   isolation: isolate;
 }
 
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 10001;
+  padding: 0.75rem 1rem;
+  background: var(--accent);
+  color: #ffffff;
+  text-decoration: none;
+  transform: translateY(-140%);
+  transition: transform 0.2s ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
 main {
   position: relative;
   z-index: 1;
@@ -224,26 +241,6 @@ img {
 ::selection {
   background: var(--accent);
   color: #ffffff;
-}
-
-/* --- Home CTA --- */
-
-.home-cta {
-  padding: 6rem var(--layout-pad);
-  text-align: center;
-}
-
-.home-cta__title {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 6vw, 4.5rem);
-  color: var(--text);
-  margin: 0;
-  letter-spacing: 0.02em;
-}
-
-.home-cta__button {
-  margin-top: 2rem;
-  display: inline-block;
 }
 
 /* --- Reduced Motion --- */

@@ -8,10 +8,13 @@ test('app keeps the multipage shell without legacy chrome', () => {
   assert.doesNotMatch(appSource, /Cursor/)
   assert.doesNotMatch(appSource, /FilmGrain/)
   assert.doesNotMatch(appSource, /Marquee/)
+  assert.match(appSource, /lazy\(\(\)\s*=>\s*import/)
+  assert.match(appSource, /Suspense/)
   assert.match(appSource, /path="proyectos"/)
   assert.match(appSource, /path="proyectos\/:slug"/)
   assert.match(appSource, /path="studio"/)
   assert.match(appSource, /path="contacto"/)
+  assert.match(appSource, /path="\*"/)
 })
 
 test('home page is rebuilt around a pinned reel and integrated end frame', () => {
@@ -46,6 +49,12 @@ test('home reel exposes pinned frames, rising mask, and blur-based title crossfa
 
   assert.match(reelSource, /home-reel__sticky/)
   assert.match(reelSource, /home-reel__title-card/)
+  assert.match(reelSource, /project\.video/)
+  assert.match(reelSource, /<video/)
+  assert.match(reelSource, /autoPlay/)
+  assert.match(reelSource, /muted/)
+  assert.match(reelSource, /loop/)
+  assert.match(reelSource, /playsInline/)
   assert.match(reelSource, /showcaseProjects\.slice\(0,\s*4\)/)
   assert.match(reelSource, /const TITLE_FADE_OUT_START = 0\.38/)
   assert.match(reelSource, /const TITLE_FADE_OUT_END = 0\.58/)
@@ -87,8 +96,11 @@ test('home end frame integrates contact and lower support links without the old 
   const contactSource = readFileSync(new URL('../src/pages/ContactPage.jsx', import.meta.url), 'utf8')
 
   assert.match(endSource, /siteContent\.contact\.title/)
+  assert.match(endSource, /TextSwap/)
   assert.match(contactSource, /contact\.title/)
   assert.match(endSource, /home-end__footer-links/)
+  assert.match(endCss, /\.home-end__title-label/)
+  assert.match(endCss, /\.home-end__title-label[\s\S]*text-shadow:/)
   assert.match(endCss, /\.home-end[\s\S]*background:\s*var\(--bg\)/)
   assert.match(endCss, /min-height:\s*100dvh/)
   assert.doesNotMatch(endCss, /100svh/)

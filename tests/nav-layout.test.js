@@ -9,6 +9,8 @@ test('navigation uses a clean home overlay and distributed top bar', () => {
   assert.match(navSource, /const navLinks = siteContent\.nav/)
   assert.match(navSource, /className="nav__grid"/)
   assert.match(navSource, /className="nav__theme-dock"/)
+  assert.match(navSource, /TextSwap/)
+  assert.match(navSource, /<\/header>\s*\n\s*<div className="nav__theme-dock"/)
   assert.match(navSource, /Dark/)
   assert.match(navSource, /Light/)
   assert.doesNotMatch(navSource, /contactLink/)
@@ -23,7 +25,10 @@ test('navigation uses a clean home overlay and distributed top bar', () => {
   assert.match(navCss, /\.nav__theme-dock[\s\S]*top:\s*50%/)
   assert.match(navCss, /\.nav__theme-dock[\s\S]*transform:\s*translateY\(-50%\)\s*rotate\(-90deg\)/)
   assert.match(navCss, /\.nav__theme-dock[\s\S]*transform-origin:\s*left center/)
+  assert.match(navCss, /\.nav__item[\s\S]*justify-self:\s*center/)
   assert.match(navCss, /\.nav__item--link[\s\S]*font-weight:\s*500/)
+  assert.doesNotMatch(navCss, /\.nav__item--brand[\s\S]*justify-self:\s*start/)
+  assert.doesNotMatch(navCss, /\.nav__item--link:last-child[\s\S]*justify-self:\s*end/)
   assert.match(navSource, /nav__menu-bar nav__menu-bar--top/)
   assert.match(navSource, /nav__menu-bar nav__menu-bar--middle/)
   assert.match(navSource, /nav__menu-bar nav__menu-bar--bottom/)
@@ -52,9 +57,25 @@ test('home nav only uses the light-on-dark treatment while the reel is active', 
 
 test('main layout skips the traditional footer on home', () => {
   const layoutSource = readFileSync(new URL('../src/layouts/MainLayout.jsx', import.meta.url), 'utf8')
+  const footerSource = readFileSync(new URL('../src/components/Footer/Footer.jsx', import.meta.url), 'utf8')
 
   assert.match(layoutSource, /const isHome = location\.pathname === '\/'/)
+  assert.match(layoutSource, /className="skip-link"/)
   assert.match(layoutSource, /!\s*isHome\s*&&\s*<Footer \/>/)
+  assert.doesNotMatch(footerSource, /footer--minimal/)
+  assert.doesNotMatch(footerSource, /if \(isHome\)/)
+})
+
+test('mobile navigation exposes stronger dialog accessibility hooks', () => {
+  const navSource = readFileSync(new URL('../src/components/Nav/Nav.jsx', import.meta.url), 'utf8')
+
+  assert.match(navSource, /menuButtonRef/)
+  assert.match(navSource, /firstFocusable/)
+  assert.match(navSource, /lastFocusable/)
+  assert.match(navSource, /event\.key === 'Escape'/)
+  assert.match(navSource, /aria-labelledby="nav-mobile-title"/)
+  assert.match(navSource, /id="nav-mobile-title"/)
+  assert.match(navSource, /tabIndex=\{-1\}/)
 })
 
 test('theme transition uses a centered radial blur reveal while keeping the home reel stable', () => {

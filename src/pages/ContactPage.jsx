@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { siteContent } from '../data/siteContent'
+import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion'
 import './ContactPage.css'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -33,8 +34,13 @@ const contactCards = [
 
 export default function ContactPage() {
   const sectionRef = useRef(null)
+  const reducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
+    if (reducedMotion) {
+      return undefined
+    }
+
     const section = sectionRef.current
     if (!section) return
 
@@ -83,7 +89,7 @@ export default function ContactPage() {
     }, section)
 
     return () => ctx.revert()
-  }, [])
+  }, [reducedMotion])
 
   return (
     <section className="contact" ref={sectionRef}>

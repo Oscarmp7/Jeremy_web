@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { showcaseProjects, siteContent } from '../../data/siteContent'
+import usePrefersReducedMotion from '../../hooks/usePrefersReducedMotion'
 import './HomeReel.css'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -37,9 +38,10 @@ export default function HomeReel({ ready = true }) {
   const sectionRef = useRef(null)
   const frameRefs = useRef([])
   const titleRefs = useRef([])
+  const reducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
-    if (!ready) return undefined
+    if (!ready || reducedMotion) return undefined
 
     const section = sectionRef.current
     const frames = frameRefs.current.filter(Boolean)
@@ -136,6 +138,9 @@ export default function HomeReel({ ready = true }) {
         titleCard.style.setProperty('--title-y', `${translateY.toFixed(2)}px`)
         titleCard.style.pointerEvents = opacity > 0.72 ? 'auto' : 'none'
         titleCard.setAttribute('aria-hidden', opacity > 0.12 ? 'false' : 'true')
+        titleCard
+          .querySelector('.home-reel__view')
+          ?.setAttribute('tabindex', opacity > 0.72 ? '0' : '-1')
       })
     }
 
@@ -156,13 +161,13 @@ export default function HomeReel({ ready = true }) {
     }, section)
 
     return () => ctx.revert()
-  }, [ready])
+  }, [ready, reducedMotion])
 
   return (
     <section
       className="home-reel"
       ref={sectionRef}
-      style={{ '--reel-frames': reelProjects.length }}
+      style={{ '--reel-frames': reducedMotion ? 1 : reelProjects.length }}
     >
       <div className="home-reel__sticky">
         <div className="home-reel__viewport">
@@ -175,7 +180,26 @@ export default function HomeReel({ ready = true }) {
               }}
             >
               <div className="home-reel__media">
-                <img src={project.poster} alt={project.title} loading={index === 0 ? 'eager' : 'lazy'} />
+                {!reducedMotion && project.video ? (
+                  <video
+                    src={project.video}
+                    poster={project.poster}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload={index === 0 ? 'auto' : 'metadata'}
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <img
+                    src={project.poster}
+                    alt={project.title}
+                    loading={index === 0 ? 'eager' : 'lazy'}
+                    fetchPriority={index === 0 ? 'high' : 'auto'}
+                    decoding="async"
+                  />
+                )}
               </div>
               <div className="home-reel__overlay" />
             </article>
@@ -192,7 +216,11 @@ export default function HomeReel({ ready = true }) {
               >
                 <p className="home-reel__meta">{item.meta}</p>
                 <h1 className="home-reel__title">{item.title}</h1>
-                <Link to={item.href} className="home-reel__view">
+                <Link
+                  to={item.href}
+                  className="home-reel__view"
+                  tabIndex={index === 0 ? 0 : -1}
+                >
                   {item.action}
                 </Link>
               </div>

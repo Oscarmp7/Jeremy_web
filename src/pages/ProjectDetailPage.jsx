@@ -3,12 +3,14 @@ import { useParams, Link } from 'react-router'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { showcaseProjects, siteContent } from '../data/siteContent'
+import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion'
 import './ProjectDetailPage.css'
 
 gsap.registerPlugin(ScrollTrigger)
 
 export default function ProjectDetailPage() {
   const { slug } = useParams()
+  const reducedMotion = usePrefersReducedMotion()
 
   const heroImgRef = useRef(null)
   const titleRef = useRef(null)
@@ -20,7 +22,7 @@ export default function ProjectDetailPage() {
   const project = showcaseProjects[projectIndex]
 
   useEffect(() => {
-    if (!project) return
+    if (!project || reducedMotion) return undefined
 
     const ctx = gsap.context(() => {
       // Hero parallax
@@ -94,7 +96,7 @@ export default function ProjectDetailPage() {
     })
 
     return () => ctx.revert()
-  }, [project])
+  }, [project, reducedMotion])
 
   // Scroll to top on slug change
   useEffect(() => {
@@ -123,6 +125,9 @@ export default function ProjectDetailPage() {
           className="project-detail__hero-img"
           src={project.poster}
           alt={project.title}
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
         />
         <div className="project-detail__hero-overlay" />
       </section>

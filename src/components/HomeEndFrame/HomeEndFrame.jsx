@@ -1,4 +1,5 @@
 import { siteContent } from '../../data/siteContent'
+import TextSwap from '../TextSwap/TextSwap'
 import './HomeEndFrame.css'
 
 export default function HomeEndFrame() {
@@ -12,7 +13,11 @@ export default function HomeEndFrame() {
           target="_blank"
           rel="noreferrer"
         >
-          {siteContent.contact.title}
+          <TextSwap
+            label={siteContent.contact.title}
+            variant="display"
+            className="home-end__title-label"
+          />
         </a>
         <p className="home-end__text">{siteContent.contact.text}</p>
       </div>

@@ -6,6 +6,13 @@ const portfolioImages = [
   'https://wol7zpzfeh2wdhnp.public.blob.vercel-storage.com/briefs/1773101803929-Screenshot%202026-03-09%20at%208.14.35%E2%80%AFPM.png',
 ]
 
+const portfolioPlaceholderVideos = [
+  'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
+  'https://filesamples.com/samples/video/mp4/sample_960x400_ocean_with_audio.mp4',
+  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+  'https://download.samplelib.com/mp4/sample-10s.mp4',
+]
+
 export const showcaseProjects = [
   {
     slug: 'la-bodega-dia-de-los-padres',
@@ -14,6 +21,7 @@ export const showcaseProjects = [
     category: 'Campaña estacional',
     year: '2025',
     poster: portfolioImages[0],
+    video: portfolioPlaceholderVideos[0],
     summary:
       'Una campaña pensada para conectar emoción, producto y recordación en una pieza social con acabado cinematográfico.',
     scope: ['Producción audiovisual', 'Filmación', 'Colorización'],
@@ -30,6 +38,7 @@ export const showcaseProjects = [
     category: 'Hospitality / lifestyle',
     year: '2025',
     poster: portfolioImages[1],
+    video: portfolioPlaceholderVideos[1],
     summary:
       'Contenido audiovisual premium para traducir atmósfera, diseño y experiencia en una presencia visual más aspiracional.',
     scope: ['Fotografía', 'Filmación', 'Creación de contenido'],
@@ -46,6 +55,7 @@ export const showcaseProjects = [
     category: 'Automotriz',
     year: '2025',
     poster: portfolioImages[2],
+    video: portfolioPlaceholderVideos[2],
     summary:
       'Producción de contenido para una marca automotriz que exige presencia, energía y ejecución técnica sólida.',
     scope: ['Producción audiovisual', 'Filmación', 'Creación de contenido'],
@@ -62,6 +72,7 @@ export const showcaseProjects = [
     category: 'Retail / salud',
     year: '2024',
     poster: portfolioImages[3],
+    video: portfolioPlaceholderVideos[3],
     summary:
       'Piezas claras y actuales para comunicar confianza, dinamismo y cercanía en el punto exacto entre utilidad y marca.',
     scope: ['Producción audiovisual', 'Fotografía', 'Creación de contenido'],

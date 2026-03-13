@@ -46,6 +46,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
   gap: 0.5rem;
   margin-top: 2rem;
   padding: 16px 36px;
@@ -123,6 +125,9 @@
 }
 
 .contact-card__value {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   font-family: var(--font-body);
   font-size: 0.95rem;
   color: var(--text);

@@ -22,7 +22,7 @@ test('site content reflects the Manzana Cuatro brief and dedicated client band d
   )
 })
 
-test('showcase projects and services match the brief inventory', () => {
+test('showcase projects, services, and reel videos match the brief inventory', () => {
   assert.equal(showcaseProjects.length, 5)
   assert.deepEqual(
     showcaseProjects.map((project) => project.title),
@@ -44,6 +44,16 @@ test('showcase projects and services match the brief inventory', () => {
       'Fotografía',
       'Creación de contenido',
     ],
+  )
+
+  assert.equal(showcaseProjects.slice(0, 4).every((project) => typeof project.video === 'string'), true)
+  assert.equal(new Set(showcaseProjects.slice(0, 4).map((project) => project.video)).size, 4)
+  assert.ok(
+    new Set(
+      showcaseProjects
+        .slice(0, 4)
+        .map((project) => new URL(project.video).hostname),
+    ).size >= 3,
   )
 })
 

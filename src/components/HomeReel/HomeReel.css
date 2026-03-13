@@ -23,6 +23,7 @@
 .home-reel__frame,
 .home-reel__media,
 .home-reel__media img,
+.home-reel__media video,
 .home-reel__overlay {
   position: absolute;
   inset: 0;
@@ -55,10 +56,14 @@
   z-index: 4;
 }
 
-.home-reel__media img {
+.home-reel__media img,
+.home-reel__media video {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.home-reel__media img {
   animation: home-reel-drift 18s ease-in-out infinite alternate;
 }
 
@@ -143,6 +148,11 @@
 }
 
 .home-reel__view {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
   pointer-events: auto;
   text-decoration: none;
   font-family: var(--font-body);

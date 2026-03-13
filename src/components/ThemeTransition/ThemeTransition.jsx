@@ -1,14 +1,22 @@
 import { useRef, useCallback } from 'react'
 import gsap from 'gsap'
+import usePrefersReducedMotion from '../../hooks/usePrefersReducedMotion'
 import './ThemeTransition.css'
 
 export default function useThemeTransition(onMidpoint) {
   const veilRef = useRef(null)
   const orbRef = useRef(null)
   const animatingRef = useRef(false)
+  const reducedMotion = usePrefersReducedMotion()
 
   const play = useCallback(() => {
     if (animatingRef.current) return
+
+    if (reducedMotion) {
+      onMidpoint?.()
+      return
+    }
+
     animatingRef.current = true
 
     const transitionTargets = [veilRef.current, orbRef.current].filter(Boolean)
@@ -59,7 +67,7 @@ export default function useThemeTransition(onMidpoint) {
         ease: 'power3.out',
       }, 0.34)
       .set(transitionTargets, { display: 'none' })
-  }, [onMidpoint])
+  }, [onMidpoint, reducedMotion])
 
   const curtain = (
     <>

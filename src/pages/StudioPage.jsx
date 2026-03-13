@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { siteContent } from '../data/siteContent'
+import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion'
 import './StudioPage.css'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -11,11 +12,16 @@ export default function StudioPage() {
   const sectionRef = useRef(null)
   const aboutImageRef = useRef(null)
   const statRefs = useRef([])
+  const reducedMotion = usePrefersReducedMotion()
 
   const { about, stats, services, servicesSection } = siteContent
   const manifestoWords = about.title.replace(/\.$/, '').split(' ')
 
   useEffect(() => {
+    if (reducedMotion) {
+      return undefined
+    }
+
     const ctx = gsap.context(() => {
       // --- Manifesto word-by-word reveal ---
       gsap.to('.manifesto__word', {
@@ -80,10 +86,13 @@ export default function StudioPage() {
     }, sectionRef)
 
     return () => ctx.revert()
-  }, [stats])
+  }, [reducedMotion, stats])
 
   return (
-    <div className="page page--studio" ref={sectionRef}>
+    <div
+      className={`page page--studio${reducedMotion ? ' page--reduced-motion' : ''}`}
+      ref={sectionRef}
+    >
       <h1 className="studio__sr-title">{about.eyebrow}</h1>
 
       {/* ── Section 1: Manifesto ── */}
@@ -120,6 +129,7 @@ export default function StudioPage() {
               alt="Manzana Cuatro studio"
               className="studio-about__image"
               loading="lazy"
+              decoding="async"
             />
           </div>
         </div>

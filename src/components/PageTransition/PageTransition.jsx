@@ -1,6 +1,7 @@
 import { useRef, useLayoutEffect } from 'react'
 import { useLocation } from 'react-router'
 import gsap from 'gsap'
+import usePrefersReducedMotion from '../../hooks/usePrefersReducedMotion'
 import './PageTransition.css'
 
 export default function PageTransition({ children }) {
@@ -9,10 +10,16 @@ export default function PageTransition({ children }) {
   const sheenRef = useRef(null)
   const location = useLocation()
   const isFirstRender = useRef(true)
+  const reducedMotion = usePrefersReducedMotion()
 
   useLayoutEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false
+      return
+    }
+
+    if (reducedMotion) {
+      window.scrollTo(0, 0)
       return
     }
 
@@ -39,7 +46,7 @@ export default function PageTransition({ children }) {
         ease: 'power4.inOut',
       }, 0.02)
       .set(overlayRefs, { display: 'none' })
-  }, [location.pathname])
+  }, [location.pathname, reducedMotion])
 
   return (
     <>
