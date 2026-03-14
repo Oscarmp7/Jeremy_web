@@ -55,7 +55,7 @@
     transform var(--swap-duration) var(--swap-ease),
     opacity var(--swap-duration) var(--swap-ease),
     filter var(--swap-duration) var(--swap-ease);
-  transition-delay: calc(var(--char-index) * var(--swap-stagger));
+  transition-delay: 0ms;
   will-change: transform, opacity, filter;
 }
 

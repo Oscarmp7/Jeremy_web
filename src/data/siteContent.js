@@ -184,6 +184,46 @@ export const siteContent = {
       'Servicios presentados con la claridad de un partner audiovisual, no con el ruido de una agencia genérica.',
     cta: { label: 'Solicita una cotización ahora', href: 'https://wa.me/18498633817' },
   },
+  colorization: {
+    title: 'Colorización',
+    beforeLabel: 'Raw',
+    afterLabel: 'Colorizado',
+    reels: [
+      {
+        title: 'Beauty / retail grade',
+        client: 'Maison Vale',
+        category: 'Retail social',
+        year: '2025',
+        summary:
+          'Un look mas limpio y luminoso para empujar piel, producto y lujo comercial sin perder naturalidad.',
+        tags: ['Colorizacion', 'Retail', 'Vertical'],
+        video: portfolioPlaceholderVideos[0],
+        poster: portfolioImages[0],
+      },
+      {
+        title: 'Hospitality look pass',
+        client: 'Shibuya Casa de Campo',
+        category: 'Hospitality reel',
+        year: '2025',
+        summary:
+          'Balance de tonos y contraste para convertir una atmosfera aspiracional en una pieza lista para campana.',
+        tags: ['Finishing', 'Hospitality', 'Campaign'],
+        video: portfolioPlaceholderVideos[1],
+        poster: portfolioImages[1],
+      },
+      {
+        title: 'Automotive finishing',
+        client: 'Changan Dominicana',
+        category: 'Launch spot',
+        year: '2025',
+        summary:
+          'Un acabado mas denso y controlado para elevar metal, reflejos y sensacion de performance en movimiento.',
+        tags: ['Colorizacion', 'Automotive', 'Commercial'],
+        video: portfolioPlaceholderVideos[2],
+        poster: portfolioImages[2],
+      },
+    ],
+  },
   contact: {
     eyebrow: 'Contacto',
     title: 'Comienza tu historia',

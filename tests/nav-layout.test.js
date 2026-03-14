@@ -27,6 +27,8 @@ test('navigation uses a clean home overlay and distributed top bar', () => {
   assert.match(navCss, /\.nav__theme-dock[\s\S]*transform-origin:\s*left center/)
   assert.match(navCss, /\.nav__item[\s\S]*justify-self:\s*center/)
   assert.match(navCss, /\.nav__item--link[\s\S]*font-weight:\s*500/)
+  assert.match(navCss, /\.nav__item--brand:is\(:hover,\s*:focus-visible\)[\s\S]*letter-spacing:/)
+  assert.match(navCss, /\.nav__item--brand:is\(:hover,\s*:focus-visible\)[\s\S]*opacity:/)
   assert.doesNotMatch(navCss, /\.nav__item--brand[\s\S]*justify-self:\s*start/)
   assert.doesNotMatch(navCss, /\.nav__item--link:last-child[\s\S]*justify-self:\s*end/)
   assert.match(navSource, /nav__menu-bar nav__menu-bar--top/)
@@ -38,21 +40,23 @@ test('navigation uses a clean home overlay and distributed top bar', () => {
   assert.match(navCss, /\.nav__menu--open\s+\.nav__menu-bar--bottom[\s\S]*rotate\(-45deg\)/)
   assert.match(navSource, /menuOpen \? ' nav--menu-open' : ''/)
   assert.match(navCss, /\.nav--menu-open[\s\S]*z-index:\s*160/)
+  assert.match(navCss, /\.nav__item:is\(:hover,\s*:focus-visible\)\s+\.text-swap__layer[\s\S]*transition-delay:/)
   assert.doesNotMatch(navCss, /\.nav__inner--home/)
   assert.doesNotMatch(navCss, /\.nav__inner--interior/)
 })
 
-test('home nav only uses the light-on-dark treatment while the reel is active', () => {
+test('home nav only uses the light-on-dark treatment while the reel media stage is active', () => {
   const navSource = readFileSync(new URL('../src/components/Nav/Nav.jsx', import.meta.url), 'utf8')
   const navCss = readFileSync(new URL('../src/components/Nav/Nav.css', import.meta.url), 'utf8')
 
-  assert.match(navSource, /document\.querySelector\('\.home-end'\)/)
+  assert.match(navSource, /home-reel-stagechange/)
   assert.match(navSource, /setHomeOnDarkStage/)
-  assert.match(navSource, /window\.innerHeight \* 0\.05/)
+  assert.match(navSource, /detail\.tone/)
   assert.match(navSource, /nav--home-stage/)
   assert.match(navCss, /\.nav--home-stage\s+\.nav__item/)
   assert.doesNotMatch(navCss, /\.nav--home\s+\.nav__item/)
   assert.match(navSource, /scrolled && !isHome/)
+  assert.doesNotMatch(navSource, /document\.querySelector\('\.home-end'\)/)
 })
 
 test('main layout skips the traditional footer on home', () => {

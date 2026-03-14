@@ -33,24 +33,21 @@ export default function Nav({ theme = 'dark', toggleTheme = noop }) {
     }
 
     const syncHomeStage = () => {
-      const homeEnd = document.querySelector('.home-end')
-      if (!homeEnd) {
-        setHomeOnDarkStage(true)
-        return
-      }
+      const tone = document.documentElement.dataset.homeReelTone || 'media'
+      setHomeOnDarkStage(tone !== 'pure')
+    }
 
-      const finalFrameTop = homeEnd.getBoundingClientRect().top
-      const finalFrameThreshold = window.innerHeight * 0.05
-      setHomeOnDarkStage(finalFrameTop > finalFrameThreshold)
+    const handleHomeStageChange = (event) => {
+      const tone = event.detail && event.detail.tone
+      if (typeof tone !== 'string') return
+      setHomeOnDarkStage(tone !== 'pure')
     }
 
     syncHomeStage()
-    window.addEventListener('scroll', syncHomeStage, { passive: true })
-    window.addEventListener('resize', syncHomeStage)
+    window.addEventListener('home-reel-stagechange', handleHomeStageChange)
 
     return () => {
-      window.removeEventListener('scroll', syncHomeStage)
-      window.removeEventListener('resize', syncHomeStage)
+      window.removeEventListener('home-reel-stagechange', handleHomeStageChange)
     }
   }, [isHome])
 
