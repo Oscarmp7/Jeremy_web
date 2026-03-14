@@ -55,6 +55,16 @@ test('showcase projects, services, and reel videos match the brief inventory', (
         .map((project) => new URL(project.video).hostname),
     ).size >= 3,
   )
+
+  assert.equal(
+    showcaseProjects.every(
+      (project) => Array.isArray(project.disciplines)
+        && project.disciplines.length >= 1
+        && typeof project.deliverable === 'string'
+        && typeof project.objective === 'string',
+    ),
+    true,
+  )
 })
 
 test('credibility stats preserve the brief numbers', () => {
@@ -89,6 +99,22 @@ test('colorization content exposes the home comparison story', () => {
         && reel.tags.length >= 2
         && typeof reel.video === 'string'
         && typeof reel.poster === 'string',
+    ),
+    true,
+  )
+})
+
+test('projects page content exposes editorial framing and service filters', () => {
+  assert.equal(typeof siteContent.projectsPage.title, 'string')
+  assert.equal(typeof siteContent.projectsPage.intro, 'string')
+  assert.equal(Array.isArray(siteContent.projectsPage.filters), true)
+  assert.deepEqual(
+    siteContent.projectsPage.filters.map((filter) => filter.id),
+    ['all', 'production', 'color', 'photo', 'content'],
+  )
+  assert.equal(
+    siteContent.projectsPage.filters.every(
+      (filter) => typeof filter.label === 'string' && typeof filter.description === 'string',
     ),
     true,
   )

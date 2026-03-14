@@ -22,6 +22,10 @@ export const showcaseProjects = [
     year: '2025',
     poster: portfolioImages[0],
     video: portfolioPlaceholderVideos[0],
+    disciplines: ['production', 'color', 'content'],
+    objective:
+      'Traducir una promocion estacional en una pieza social con calidez, marca y recordacion inmediata.',
+    deliverable: 'Spot vertical para redes / campana estacional',
     summary:
       'Una campaña pensada para conectar emoción, producto y recordación en una pieza social con acabado cinematográfico.',
     scope: ['Producción audiovisual', 'Filmación', 'Colorización'],
@@ -39,6 +43,10 @@ export const showcaseProjects = [
     year: '2025',
     poster: portfolioImages[1],
     video: portfolioPlaceholderVideos[1],
+    disciplines: ['photo', 'content'],
+    objective:
+      'Convertir atmosfera, espacio y experiencia de marca en contenido aspiracional listo para campanas.',
+    deliverable: 'Stills editoriales + contenido corto para hospitality',
     summary:
       'Contenido audiovisual premium para traducir atmósfera, diseño y experiencia en una presencia visual más aspiracional.',
     scope: ['Fotografía', 'Filmación', 'Creación de contenido'],
@@ -56,6 +64,10 @@ export const showcaseProjects = [
     year: '2025',
     poster: portfolioImages[2],
     video: portfolioPlaceholderVideos[2],
+    disciplines: ['production', 'content'],
+    objective:
+      'Empujar presencia, energia y performance en una ejecucion pensada para social, pauta y lanzamiento.',
+    deliverable: 'Contenido de lanzamiento automotriz / social-first',
     summary:
       'Producción de contenido para una marca automotriz que exige presencia, energía y ejecución técnica sólida.',
     scope: ['Producción audiovisual', 'Filmación', 'Creación de contenido'],
@@ -73,6 +85,10 @@ export const showcaseProjects = [
     year: '2024',
     poster: portfolioImages[3],
     video: portfolioPlaceholderVideos[3],
+    disciplines: ['production', 'photo', 'content'],
+    objective:
+      'Equilibrar claridad comercial y presencia visual en piezas que necesitan vender sin perder pulido.',
+    deliverable: 'Campana retail con adaptaciones para social y fotografia',
     summary:
       'Piezas claras y actuales para comunicar confianza, dinamismo y cercanía en el punto exacto entre utilidad y marca.',
     scope: ['Producción audiovisual', 'Fotografía', 'Creación de contenido'],
@@ -89,6 +105,10 @@ export const showcaseProjects = [
     category: 'Luxury automotive',
     year: '2025',
     poster: portfolioImages[4],
+    disciplines: ['color', 'photo'],
+    objective:
+      'Construir una presencia de lujo mas sobria y precisa, con textura, reflejos y finishing de alto nivel.',
+    deliverable: 'Finishing premium + stills para marca luxury',
     summary:
       'Una dirección visual más sobria y precisa para una marca que demanda detalle, carácter y una ejecución impecable.',
     scope: ['Filmación', 'Colorización', 'Fotografía'],
@@ -149,6 +169,41 @@ export const siteContent = {
     intro:
       'Una selección de piezas desarrolladas para marcas, espacios y campañas que necesitaban impacto visual con ejecución real.',
     modalCta: 'Solicita una cotización ahora',
+  },
+  projectsPage: {
+    eyebrow: 'Trabajo seleccionado',
+    title: 'Casos construidos para que la marca se vea a la altura de su ambicion.',
+    intro:
+      'Una lectura editorial de proyectos donde produccion, contenido, fotografia y colorizacion se organizan como casos, no como un grid generico de thumbnails.',
+    rail:
+      'Cada proyecto se presenta con contexto, objetivo y servicios aplicados para que la pagina se lea como portfolio y como estudio.',
+    filters: [
+      {
+        id: 'all',
+        label: 'Todos',
+        description: 'Panorama completo del estudio',
+      },
+      {
+        id: 'production',
+        label: 'Produccion',
+        description: 'Campanas, rodaje y ejecucion audiovisual',
+      },
+      {
+        id: 'color',
+        label: 'Colorizacion',
+        description: 'Finishing, grading y pulido final',
+      },
+      {
+        id: 'photo',
+        label: 'Fotografia',
+        description: 'Frames, stills y direccion de imagen',
+      },
+      {
+        id: 'content',
+        label: 'Contenido',
+        description: 'Piezas pensadas para social y pauta',
+      },
+    ],
   },
   about: {
     eyebrow: 'Estudio',
