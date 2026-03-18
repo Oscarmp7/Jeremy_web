@@ -28,7 +28,8 @@ src/
 │
 ├── hooks/
 │   ├── useTheme.js            # Tema light/dark con localStorage + system preference
-│   └── usePrefersReducedMotion.js  # Media query (prefers-reduced-motion)
+│   ├── usePrefersReducedMotion.js  # Media query (prefers-reduced-motion)
+│   └── useHomeReelScroll.js   # GSAP ScrollTrigger logic extraída de HomeReel
 │
 ├── layouts/
 │   └── MainLayout.jsx         # Envuelve todas las páginas: Nav + PageTransition + Footer
@@ -43,7 +44,7 @@ src/
 │   ├── TextSwap/              # Microinteracción: hover anima caracteres (CSS puro)
 │   ├── ComparisonSlider/      # Slider before/after con sincronización de video por RAF
 │   ├── ProjectShowcase/       # Grid editorial con filtros por disciplina
-│   ├── HomeReel/              # ⚠️ Componente más complejo (732 líneas). Scroll experience completa
+│   ├── HomeReel/              # ⚠️ Componente crítico. Scroll experience + scroll hint HUD
 │   ├── HomeClientBand/        # Ticker infinito CSS de clientes
 │   └── HomeEndFrame/          # CTA final de la home
 │
@@ -152,13 +153,23 @@ tests/                         # 9 archivos de test con Node --test
 
 ## HomeReel — Componente Crítico
 
-**Es el corazón del sitio** (732 líneas). No modificar sin entenderlo completo.
+**Es el corazón del sitio**. No modificar sin entenderlo completo.
+
+La lógica de scroll está extraída en `useHomeReelScroll.js` — HomeReel.jsx maneja solo el render.
 
 **Fases del scroll (progress 0–1)**:
 1. **Reels** (0–3 transiciones): 4 proyectos con clip-path reveal suave
 2. **Color Stage**: wash desaturado fade in, tone cambia a `pure`
 3. **Color Title**: título entra desde arriba con rotación + escala + blur
 4. **Comparison**: slider before/after desliza entre 3 casos de colorización
+
+**Scroll Hint** (`.home-reel__scroll-hint`):
+- "SCROLL" en Space Mono + línea animada con gota que cae
+- Fade-in GSAP (0.8s, delay 0.6s) cuando `ready = true`
+- Fade-out GSAP (0.35s) al primer `window.scroll` — listener se elimina tras disparar
+- Oculto en mobile con `display: none` a `max-width: 720px`
+- `z-index: 14` (por encima del overlay `z-13` y baseline `z-12`)
+- `visibility: hidden` en CSS — GSAP `autoAlpha` gestiona visibility + opacity
 
 **Comunicación con Nav**:
 - Dispara `window.dispatchEvent(new CustomEvent('home-reel-stagechange', { detail: { tone } }))`
