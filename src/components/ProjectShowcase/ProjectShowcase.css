@@ -393,10 +393,13 @@
     grid-template-columns: none;
     grid-auto-flow: column;
     grid-auto-columns: minmax(15rem, 84vw);
+    position: static;
+    top: auto;
     overflow-x: auto;
     overscroll-behavior-x: contain;
     padding-bottom: 1rem;
     scrollbar-width: none;
+    backdrop-filter: none;
   }
 
   .projects-showcase__filters::-webkit-scrollbar {

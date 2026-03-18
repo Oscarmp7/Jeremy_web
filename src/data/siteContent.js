@@ -241,8 +241,8 @@ export const siteContent = {
   },
   colorization: {
     title: 'Colorización',
-    beforeLabel: 'Raw',
-    afterLabel: 'Colorizado',
+    beforeLabel: 'Colorizado',
+    afterLabel: 'Raw',
     reels: [
       {
         title: 'Beauty / retail grade',

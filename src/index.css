@@ -41,19 +41,6 @@
   font-display: swap;
 }
 
-/* --- Tailwind --- */
-
-@import "tailwindcss";
-
-/* --- Tailwind Theme --- */
-
-@theme {
-  --font-display: 'Bebas Neue', system-ui, sans-serif;
-  --font-hud: 'Space Mono', monospace;
-  --font-body: 'Inter', system-ui, sans-serif;
-  --font-serif: 'Cormorant Garamond', Georgia, serif;
-}
-
 /* --- CSS Custom Properties --- */
 
 :root,

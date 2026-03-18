@@ -1,16 +1,21 @@
-# React + Vite
+# Manzana Cuatro
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Sitio portfolio de Manzana Cuatro construido con `React`, `Vite`, `React Router` y transiciones basadas en `GSAP`.
 
-Currently, two official plugins are available:
+## Scripts
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- `npm run dev`: servidor local de desarrollo.
+- `npm test`: suite de checks del repo.
+- `npm run lint`: validacion de ESLint.
+- `npm run build`: build de produccion mas generacion de HTML estatico por ruta para SEO y deep links.
 
-## React Compiler
+## Deploy
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+- `GitHub Pages`: el workflow en `.github/workflows/deploy-pages.yml` corre `lint`, `test` y build con `DEPLOY_TARGET=github-pages`.
+- `Vercel`: el build produce HTML por ruta (`/`, `/proyectos`, `/studio`, `/contacto` y detalles de proyecto) para que los previews sociales y las rutas directas no dependan de mutaciones de metadatos en cliente.
 
-## Expanding the ESLint configuration
+## Notas Tecnicas
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- La home usa `GSAP ScrollTrigger` para la secuencia principal y una comparativa de colorizacion.
+- El build postprocesa `dist/index.html` para emitir metadatos canonicos por ruta.
+- El proyecto prioriza una visual desktop fuerte sin sacrificar mobile ni crawlers.

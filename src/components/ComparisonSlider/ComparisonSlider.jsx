@@ -4,10 +4,12 @@ import './ComparisonSlider.css'
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value))
 const VIDEO_SYNC_DRIFT_THRESHOLD = 0.08
 
-const syncFollowerToLeader = (leader, follower) => {
-  let rafId = 0
-
+const syncFollowerToLeader = (leader, follower, rafIdRef) => {
   const syncTiming = () => {
+    if (!follower || !follower.isConnected) {
+      return
+    }
+
     if (!Number.isFinite(leader.currentTime) || !Number.isFinite(follower.currentTime)) {
       return
     }
@@ -24,8 +26,8 @@ const syncFollowerToLeader = (leader, follower) => {
   }
 
   const queueTimingSync = () => {
-    window.cancelAnimationFrame(rafId)
-    rafId = window.requestAnimationFrame(syncTiming)
+    window.cancelAnimationFrame(rafIdRef.current)
+    rafIdRef.current = window.requestAnimationFrame(syncTiming)
   }
 
   const syncPlayback = () => {
@@ -57,7 +59,7 @@ const syncFollowerToLeader = (leader, follower) => {
   syncPlayback()
 
   return () => {
-    window.cancelAnimationFrame(rafId)
+    window.cancelAnimationFrame(rafIdRef.current)
     leader.removeEventListener('loadedmetadata', queueTimingSync)
     leader.removeEventListener('canplay', syncPlayback)
     leader.removeEventListener('play', syncPlayback)
@@ -81,6 +83,7 @@ export default function ComparisonSlider({
   const containerRef = useRef(null)
   const beforeLayerRef = useRef(null)
   const afterLayerRef = useRef(null)
+  const rafIdRef = useRef(0)
   const [value, setValue] = useState(defaultValue)
   const [dragging, setDragging] = useState(false)
 
@@ -97,7 +100,7 @@ export default function ComparisonSlider({
     afterVideo.defaultMuted = true
     afterVideo.muted = true
 
-    return syncFollowerToLeader(beforeVideo, afterVideo)
+    return syncFollowerToLeader(beforeVideo, afterVideo, rafIdRef)
   }, [after, before])
 
   const updateValueFromClientX = useCallback((clientX) => {

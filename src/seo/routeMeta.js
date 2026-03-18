@@ -98,3 +98,66 @@ export function getRouteMeta(pathname) {
     robots: 'noindex, nofollow',
   })
 }
+
+export function getJsonLd(pathname) {
+  const normalizedPath = normalizePath(pathname)
+
+  if (normalizedPath === '/') {
+    return {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'Organization',
+          '@id': `${SITE_URL}/#organization`,
+          name: BASE_TITLE,
+          url: SITE_URL,
+          logo: `${SITE_URL}/og-image.jpg`,
+          sameAs: ['https://instagram.com/manzanacuatro'],
+        },
+        {
+          '@type': 'WebSite',
+          '@id': `${SITE_URL}/#website`,
+          url: SITE_URL,
+          name: BASE_TITLE,
+          publisher: { '@id': `${SITE_URL}/#organization` },
+        },
+      ],
+    }
+  }
+
+  if (normalizedPath.startsWith('/proyectos/')) {
+    const slug = normalizedPath.replace('/proyectos/', '')
+    const project = showcaseProjects.find((entry) => entry.slug === slug)
+
+    if (project) {
+      const schema = {
+        '@context': 'https://schema.org',
+        '@type': 'CreativeWork',
+        '@id': `${SITE_URL}/proyectos/${project.slug}`,
+        name: project.title,
+        description: project.summary,
+        url: `${SITE_URL}/proyectos/${project.slug}`,
+        image: project.poster,
+        dateCreated: project.year,
+        creator: {
+          '@type': 'Organization',
+          '@id': `${SITE_URL}/#organization`,
+          name: BASE_TITLE,
+        },
+        about: project.client,
+        genre: project.category,
+      }
+
+      if (project.video) {
+        schema['@type'] = 'VideoObject'
+        schema.thumbnailUrl = project.poster
+        schema.contentUrl = project.video
+        schema.uploadDate = `${project.year}-01-01`
+      }
+
+      return schema
+    }
+  }
+
+  return null
+}

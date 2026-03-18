@@ -73,6 +73,8 @@
 
 .home-reel__frame:nth-child(2) {
   z-index: 2;
+  transform: translateY(var(--frame1-slide-y, 0%));
+  will-change: transform;
 }
 
 .home-reel__frame:nth-child(3) {
@@ -158,6 +160,20 @@
   place-items: center;
 }
 
+.home-reel__frame-title {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  text-align: center;
+  gap: 0.6rem;
+  padding: 0 var(--layout-pad);
+  opacity: var(--frame-title-opacity, 1);
+  will-change: opacity;
+  pointer-events: none;
+}
+
 .home-reel__title-card {
   --title-opacity: 0;
   --title-blur: 6px;
@@ -221,6 +237,71 @@
   padding: 0.55rem 0.85rem;
   border: 1px solid rgba(245, 245, 240, 0.48);
   background: color-mix(in srgb, #000 48%, transparent);
+  cursor: pointer;
+}
+
+.home-reel__scroll-hint {
+  position: absolute;
+  bottom: clamp(2rem, 5dvh, 3.5rem);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  pointer-events: none;
+  z-index: 14;
+  visibility: hidden; /* GSAP autoAlpha manages this */
+}
+
+.home-reel__scroll-label {
+  font-family: var(--font-hud);
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(245, 245, 240, 0.45);
+}
+
+.home-reel__scroll-line {
+  display: block;
+  width: 1px;
+  height: 2.8rem;
+  background: rgba(245, 245, 240, 0.18);
+  position: relative;
+  overflow: hidden;
+}
+
+.home-reel__scroll-line::after {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(245, 245, 240, 0.7);
+  animation: scroll-hint-drop 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation-delay: 1s;
+}
+
+@keyframes scroll-hint-drop {
+  0%   { top: -100%; opacity: 0; }
+  10%  { opacity: 1; }
+  80%  { top: 100%;  opacity: 1; }
+  100% { top: 100%;  opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-reel__scroll-line::after {
+    animation: none;
+    top: 0;
+    opacity: 0.4;
+  }
+}
+
+@media (max-width: 720px) {
+  .home-reel__scroll-hint {
+    display: none;
+  }
 }
 
 .home-reel__color-title {
@@ -413,6 +494,11 @@
   transform: translateY(calc(-50% + ((1 - var(--comparison-details-opacity)) * 1.25rem)));
 }
 
+.home-reel__comparison-case--revealed .home-reel__comparison-details {
+  opacity: 1;
+  transform: translateY(-50%);
+}
+
 .home-reel__comparison-kicker {
   margin: 0;
   font-family: var(--font-hud);
@@ -544,6 +630,49 @@
     --comparison-surface-width: min(76vw, 52rem);
     --comparison-meta-width: clamp(12rem, 20vw, 15rem);
   }
+
+  .home-reel__comparison-stage-inner {
+    width: min(100%, 44rem);
+    gap: 1.4rem;
+    padding-top: clamp(2rem, 3vw, 3rem);
+  }
+
+  .home-reel__comparison-details {
+    position: static;
+    opacity: 0;
+    transform: translateY(1rem);
+    width: min(100%, 30rem);
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .home-reel__comparison-case--active .home-reel__comparison-details {
+    transform: translateY(calc((1 - var(--comparison-details-opacity)) * 1rem));
+  }
+
+  .home-reel__comparison-case--revealed .home-reel__comparison-details {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .home-reel__comparison-facts {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .home-reel__comparison-tags {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 900px), (prefers-reduced-motion: reduce) {
+  .home-reel__color-stage,
+  .home-reel__color-wash,
+  .home-reel__title-card,
+  .home-reel__comparison-stage,
+  .home-reel__comparison-track,
+  .home-reel__comparison-device {
+    will-change: auto;
+  }
 }
 
 @media (max-width: 1080px) {
@@ -564,6 +693,11 @@
 
   .home-reel__comparison-case--active .home-reel__comparison-details {
     transform: translateY(calc((1 - var(--comparison-details-opacity)) * 1rem));
+  }
+
+  .home-reel__comparison-case--revealed .home-reel__comparison-details {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .home-reel__comparison-facts {
@@ -594,28 +728,87 @@
     max-width: min(12ch, calc(100vw - (var(--layout-pad) * 2)));
   }
 
-  .home-reel__color-title-copy {
-    font-size: clamp(3.8rem, 18vw, 7rem);
-    white-space: normal;
-    text-wrap: balance;
-    max-width: min(7ch, calc(100vw - (var(--layout-pad) * 2)));
+  .home-reel__color-title {
     text-align: center;
   }
 
-  .home-reel__comparison-slide {
-    padding-top: clamp(4.6rem, 8vh, 6rem);
+  .home-reel__color-title-copy {
+    font-size: clamp(2rem, 14.5vw, 7rem);
+    white-space: nowrap;
+    text-align: center;
+    letter-spacing: 0.04em;
   }
 
+  .home-reel__comparison-slide {
+    padding-top: clamp(4.6rem, 8dvh, 6rem);
+  }
+
+  /* Height-based layout so the device always fits on screen */
   .home-reel__comparison-stage-inner {
     min-height: auto;
+    height: calc(100dvh - clamp(4.6rem, 8dvh, 6rem) - clamp(3.5rem, 6dvh, 5rem));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: clamp(1rem, 2dvh, 1.5rem);
+    padding-bottom: 0;
+    gap: 0;
+    position: relative;
+  }
+
+  /* Device sizes by height so aspect-ratio doesn't overflow viewport */
+  .home-reel__comparison-device {
+    height: 52dvh;
+    width: auto;
+    box-sizing: border-box;
+    flex-shrink: 0;
   }
 
   .home-reel__comparison-surface {
     aspect-ratio: 4 / 5;
+    height: 100%;
+    width: auto;
+  }
+
+  /* Details as bottom overlay — removed from flow so device is never clipped */
+  .home-reel__comparison-details {
+    position: absolute;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    margin: 0;
+    padding: 2.5rem var(--layout-pad) 1rem;
+    box-sizing: border-box;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(1.25rem);
+    background: linear-gradient(
+      to top,
+      color-mix(in srgb, var(--bg) 78%, transparent) 0%,
+      color-mix(in srgb, var(--bg) 52%, transparent) 52%,
+      transparent 100%
+    );
+  }
+
+  .home-reel__comparison-case--active .home-reel__comparison-details {
+    opacity: var(--comparison-details-opacity);
+    transform: translateY(calc((1 - var(--comparison-details-opacity)) * 1.25rem));
+  }
+
+  .home-reel__comparison-case--revealed .home-reel__comparison-details {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .home-reel__comparison-facts {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .home-reel__comparison-tags {
+    justify-content: center;
   }
 
   .home-reel__baseline {
@@ -635,8 +828,14 @@
     padding-bottom: 4rem;
   }
 
+  /* Recalculate stage-inner height for 560px padding values */
+  .home-reel__comparison-stage-inner {
+    height: calc(100dvh - 4.2rem - 4rem);
+  }
+
   .home-reel__comparison-device {
     padding: 0.65rem;
+    height: 50dvh;
   }
 
   .home-reel__comparison-surface {

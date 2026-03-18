@@ -1,7 +1,6 @@
 import process from 'node:process'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
-import tailwindcss from '@tailwindcss/vite'
 
 const repoName = 'Jeremy_web'
 
@@ -15,5 +14,5 @@ const resolveBase = ({ command }) => {
 
 export default defineConfig(({ command }) => ({
   base: resolveBase({ command }),
-  plugins: [react(), tailwindcss()],
+  plugins: [react()],
 }))
