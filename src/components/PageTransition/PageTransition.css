@@ -1,0 +1,9 @@
+.page-stage {
+  will-change: clip-path;
+}
+
+@media (max-width: 900px), (prefers-reduced-motion: reduce) {
+  .page-stage {
+    will-change: auto;
+  }
+}

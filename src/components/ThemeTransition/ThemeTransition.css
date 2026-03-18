@@ -1,0 +1,14 @@
+.theme-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  pointer-events: none;
+  will-change: opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-veil {
+    will-change: auto;
+  }
+}

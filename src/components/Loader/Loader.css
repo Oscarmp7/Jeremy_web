@@ -1,137 +1,68 @@
 .loader {
   position: fixed;
   inset: 0;
-  width: 100dvw;
-  height: 100dvh;
-  background: #040507;
   z-index: 10000;
-  overflow: hidden;
-  pointer-events: all;
-  isolation: isolate;
-  opacity: 1;
-}
-
-.loader::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 50% 50%, rgba(204, 214, 235, 0.04) 0%, rgba(9, 10, 14, 0.24) 56%, rgba(4, 5, 7, 0.92) 100%);
+  background: #050505;
+  display: grid;
+  place-items: center;
   pointer-events: none;
 }
 
-.loader--play {
-  animation: loader-fade 1320ms linear forwards;
+.loader__content {
+  width: 100%;
+  padding: 0 var(--layout-pad);
 }
 
-.loader__core {
-  position: absolute;
-  inset: 0;
+.loader__title-card {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  text-align: center;
+  gap: 0.6rem;
+  min-height: clamp(21rem, 42dvh, 29rem);
 }
 
-.loader__line,
-.loader__field {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  pointer-events: none;
-  will-change: transform, opacity;
+.loader__meta {
+  font-family: var(--font-hud);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(245, 245, 240, 0.78);
 }
 
-.loader__line {
-  width: 140vmax;
-  height: 2px;
-  transform: translate(-50%, -50%) scaleX(0.01);
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(203, 216, 245, 0.78) 22%,
-    rgba(255, 255, 255, 0.98) 50%,
-    rgba(203, 216, 245, 0.78) 78%,
-    transparent 100%
-  );
-  opacity: 0;
-  box-shadow: 0 0 14px rgba(187, 202, 235, 0.54);
+.loader__wordmark {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 12vw, 10rem);
+  line-height: 0.88;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-wrap: balance;
+  max-width: min(14ch, calc(100vw - (var(--layout-pad) * 2)));
+  color: var(--text);
 }
 
-.loader__field {
-  width: 140vmax;
-  height: 140vmax;
-  border-radius: 50%;
-  transform: translate(-50%, -50%) scaleX(0.01) scaleY(0.01);
-  background:
-    radial-gradient(circle at center, rgba(199, 210, 236, 0.3) 0%, rgba(150, 166, 197, 0.14) 32%, rgba(6, 7, 10, 0) 70%);
-  opacity: 0;
+.loader__view {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: fit-content;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--text) 65%, transparent);
+  background: color-mix(in srgb, #000 35%, transparent);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text);
 }
 
-.loader--play .loader__line {
-  animation: tv-line 1320ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
+@media (max-width: 900px) {
+  .loader__title-card {
+    min-height: clamp(18rem, 38dvh, 24rem);
+  }
 
-.loader--play .loader__field {
-  animation: tv-field 1320ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes tv-line {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scaleX(0.01);
-  }
-  10% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scaleX(0.16);
-  }
-  28% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scaleX(1);
-  }
-  44% {
-    opacity: 0.3;
-    transform: translate(-50%, -50%) scaleX(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scaleX(1);
-  }
-}
-
-@keyframes tv-field {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scaleX(0.01) scaleY(0.01);
-  }
-  18% {
-    opacity: 0.42;
-    transform: translate(-50%, -50%) scaleX(1) scaleY(0.03);
-  }
-  46% {
-    opacity: 0.72;
-    transform: translate(-50%, -50%) scaleX(1) scaleY(0.72);
-  }
-  66% {
-    opacity: 0.92;
-    transform: translate(-50%, -50%) scaleX(1) scaleY(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scaleX(1.06) scaleY(1.06);
-  }
-}
-
-@keyframes loader-fade {
-  0%, 78% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .loader,
-  .loader__line,
-  .loader__field {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
+  .loader__wordmark {
+    font-size: clamp(2.8rem, 14vw, 5.2rem);
+    max-width: min(12ch, calc(100vw - (var(--layout-pad) * 2)));
   }
 }

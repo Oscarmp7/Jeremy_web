@@ -1,42 +1,51 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import gsap from 'gsap'
+import { siteContent } from '../../data/siteContent'
+import usePrefersReducedMotion from '../../hooks/usePrefersReducedMotion'
 import './Loader.css'
 
-const LOADER_DURATION_MS = 1320
-
 export default function Loader({ onComplete }) {
+  const loaderRef = useRef(null)
+  const reducedMotionHandledRef = useRef(false)
+  const reducedMotion = usePrefersReducedMotion()
   const [visible, setVisible] = useState(true)
-  const [playing, setPlaying] = useState(false)
 
   useEffect(() => {
-    const prevBodyOverflow = document.body.style.overflow
-    const prevBodyOverscroll = document.body.style.overscrollBehavior
-    document.body.style.overflow = 'hidden'
-    document.body.style.overscrollBehavior = 'none'
+    if (reducedMotion) {
+      if (!reducedMotionHandledRef.current) {
+        reducedMotionHandledRef.current = true
+        onComplete?.()
+      }
 
-    const start = requestAnimationFrame(() => setPlaying(true))
-
-    const done = setTimeout(() => {
-      setVisible(false)
-      document.body.style.overflow = prevBodyOverflow
-      document.body.style.overscrollBehavior = prevBodyOverscroll
-      onComplete?.()
-    }, LOADER_DURATION_MS)
-
-    return () => {
-      cancelAnimationFrame(start)
-      clearTimeout(done)
-      document.body.style.overflow = prevBodyOverflow
-      document.body.style.overscrollBehavior = prevBodyOverscroll
+      return undefined
     }
-  }, [onComplete])
 
+    const tl = gsap.timeline({
+      onComplete: () => setVisible(false),
+    })
+
+    tl.to({}, { duration: 0.24 })
+      .call(() => onComplete?.())
+      .to(loaderRef.current, {
+        opacity: 0,
+        duration: 1.05,
+        ease: 'power2.out',
+      })
+
+    return () => tl.kill()
+  }, [onComplete, reducedMotion])
+
+  if (reducedMotion) return null
   if (!visible) return null
 
   return (
-    <div className={`loader ${playing ? 'loader--play' : ''}`} aria-hidden="true">
-      <div className="loader__core" role="presentation">
-        <div className="loader__line" />
-        <div className="loader__field" />
+    <div ref={loaderRef} className="loader" aria-hidden="true">
+      <div className="loader__content">
+        <div className="loader__title-card">
+          <p className="loader__meta">{siteContent.hero.eyebrow}</p>
+          <h1 className="loader__wordmark">{siteContent.brand.name}</h1>
+          <span className="loader__view">{siteContent.hero.primaryCta.label}</span>
+        </div>
       </div>
     </div>
   )

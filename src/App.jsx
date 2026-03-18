@@ -1,66 +1,46 @@
-import { useEffect, useState } from 'react'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useTranslation } from 'react-i18next'
-import './index.css'
-
+import { Suspense, lazy, useState } from 'react'
+import { Routes, Route } from 'react-router'
+import MainLayout from './layouts/MainLayout'
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary'
 import Loader from './components/Loader/Loader'
-import Cursor from './components/ui/Cursor'
-import FilmGrain from './components/ui/FilmGrain'
-import Nav from './components/Nav/Nav'
-import Hero from './components/Hero/Hero'
-import Marquee from './components/Marquee/Marquee'
-import Work from './components/Work/Work'
-import About from './components/About/About'
-import Services from './components/Services/Services'
-import Contact from './components/Contact/Contact'
-import Footer from './components/Footer/Footer'
+import useTheme from './hooks/useTheme'
+import useThemeTransition from './components/ThemeTransition/ThemeTransition'
+import { ThemeContext } from './contexts/ThemeContext'
+
+const HomePage = lazy(() => import('./pages/HomePage'))
+const ProjectsPage = lazy(() => import('./pages/ProjectsPage'))
+const ProjectDetailPage = lazy(() => import('./pages/ProjectDetailPage'))
+const StudioPage = lazy(() => import('./pages/StudioPage'))
+const ContactPage = lazy(() => import('./pages/ContactPage'))
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 export default function App() {
   const [loaded, setLoaded] = useState(false)
-  const { i18n } = useTranslation()
+  const { theme, toggle } = useTheme()
+  const { curtain, play } = useThemeTransition(toggle)
 
-  useEffect(() => {
-    if (!loaded) return
-
-    const raf = requestAnimationFrame(() => ScrollTrigger.refresh())
-    return () => cancelAnimationFrame(raf)
-  }, [loaded])
-
-  useEffect(() => {
-    if (!loaded) return
-
-    const timeout = window.setTimeout(() => {
-      ScrollTrigger.refresh()
-    }, 190)
-
-    return () => window.clearTimeout(timeout)
-  }, [loaded, i18n.language])
+  const handleThemeToggle = () => play()
 
   return (
-    <>
-      <div
-        className="theme-flash"
-        aria-hidden="true"
-      />
-      <div className="lang-flash" aria-hidden="true" />
-
-      <Loader onComplete={() => setLoaded(true)} />
-
-      <Cursor />
-      <FilmGrain />
-
-      <div className="app-shell">
-        <Nav />
-        <main>
-          <Hero ready={loaded} />
-          <Marquee />
-          <Work />
-          <About />
-          <Services />
-          <Contact />
-        </main>
-        <Footer />
+    <ThemeContext.Provider value={{ theme, toggleTheme: handleThemeToggle }}>
+      {!loaded && <Loader onComplete={() => setLoaded(true)} />}
+      {curtain}
+      <div className={`app-shell ${loaded ? 'app-shell--ready' : ''}`}>
+        <ErrorBoundary>
+          <Suspense fallback={null}>
+            <Routes>
+              <Route element={<MainLayout />}>
+                <Route index element={<HomePage ready={loaded} />} />
+                <Route path="proyectos" element={<ProjectsPage />} />
+                <Route path="proyectos/:slug" element={<ProjectDetailPage />} />
+                <Route path="studio" element={<StudioPage />} />
+                <Route path="contacto" element={<ContactPage />} />
+                <Route path="*" element={<NotFoundPage />} />
+              </Route>
+            </Routes>
+          </Suspense>
+        </ErrorBoundary>
       </div>
-    </>
+    </ThemeContext.Provider>
   )
 }

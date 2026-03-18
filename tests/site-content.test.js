@@ -1,0 +1,121 @@
+import test from 'node:test'
+import assert from 'node:assert/strict'
+
+import { showcaseProjects, siteContent } from '../src/data/siteContent.js'
+
+test('site content reflects the Manzana Cuatro brief and dedicated client band data', () => {
+  assert.equal(siteContent.brand.name, 'Manzana Cuatro')
+  assert.equal(siteContent.brand.email, 'info@manzanacuatro.com')
+  assert.match(siteContent.brand.whatsappHref, /18498633817/)
+  assert.equal(siteContent.hero.primaryCta.label, 'Ver portafolio')
+  assert.equal(siteContent.hero.secondaryCta.label, 'Escríbenos por WhatsApp')
+  assert.equal(siteContent.contact.title, 'Comienza tu historia')
+  assert.deepEqual(
+    siteContent.clients.map((client) => client.name),
+    [
+      'La Bodega',
+      'Shibuya',
+      'Changan Dominicana',
+      'Farma Extra',
+      'Porsche Center Santo Domingo',
+    ],
+  )
+})
+
+test('showcase projects, services, and reel videos match the brief inventory', () => {
+  assert.equal(showcaseProjects.length, 5)
+  assert.deepEqual(
+    showcaseProjects.map((project) => project.title),
+    [
+      'La Bodega Día de los Padres',
+      'Shibuya Casa de Campo',
+      'Changan Dominicana',
+      'Farma Extra',
+      'Porsche Center Santo Domingo',
+    ],
+  )
+
+  assert.deepEqual(
+    siteContent.services.map((service) => service.title),
+    [
+      'Producción audiovisual',
+      'Colorización',
+      'Filmación',
+      'Fotografía',
+      'Creación de contenido',
+    ],
+  )
+
+  assert.equal(showcaseProjects.slice(0, 4).every((project) => typeof project.video === 'string'), true)
+  assert.equal(new Set(showcaseProjects.slice(0, 4).map((project) => project.video)).size, 4)
+  assert.ok(
+    new Set(
+      showcaseProjects
+        .slice(0, 4)
+        .map((project) => new URL(project.video).hostname),
+    ).size >= 3,
+  )
+
+  assert.equal(
+    showcaseProjects.every(
+      (project) => Array.isArray(project.disciplines)
+        && project.disciplines.length >= 1
+        && typeof project.deliverable === 'string'
+        && typeof project.objective === 'string',
+    ),
+    true,
+  )
+})
+
+test('credibility stats preserve the brief numbers', () => {
+  assert.deepEqual(
+    siteContent.stats.map((stat) => stat.value),
+    ['10', '300', '1'],
+  )
+})
+
+test('shared navigation uses the approved spanish-first information architecture', () => {
+  assert.deepEqual(
+    siteContent.nav.map((link) => link.label),
+    ['Proyectos', 'Estudio', 'Contacto'],
+  )
+  assert.equal(siteContent.about.eyebrow, 'Estudio')
+})
+
+test('colorization content exposes the home comparison story', () => {
+  assert.equal(siteContent.colorization.title, 'Colorización')
+  assert.equal(siteContent.colorization.beforeLabel, 'Raw')
+  assert.equal(siteContent.colorization.afterLabel, 'Colorizado')
+  assert.equal(Array.isArray(siteContent.colorization.reels), true)
+  assert.equal(siteContent.colorization.reels.length, 3)
+  assert.equal(
+    siteContent.colorization.reels.every(
+      (reel) => typeof reel.title === 'string'
+        && typeof reel.client === 'string'
+        && typeof reel.category === 'string'
+        && typeof reel.year === 'string'
+        && typeof reel.summary === 'string'
+        && Array.isArray(reel.tags)
+        && reel.tags.length >= 2
+        && typeof reel.video === 'string'
+        && typeof reel.poster === 'string',
+    ),
+    true,
+  )
+})
+
+test('projects page content exposes editorial framing and service filters', () => {
+  assert.equal(typeof siteContent.projectsPage.title, 'string')
+  assert.equal(typeof siteContent.projectsPage.intro, 'string')
+  assert.equal(Array.isArray(siteContent.projectsPage.filters), true)
+  assert.deepEqual(
+    siteContent.projectsPage.filters.map((filter) => filter.id),
+    ['all', 'production', 'color', 'photo', 'content'],
+  )
+  assert.equal(
+    siteContent.projectsPage.filters.every(
+      (filter) => typeof filter.label === 'string' && typeof filter.description === 'string',
+    ),
+    true,
+  )
+})
