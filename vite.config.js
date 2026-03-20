@@ -2,7 +2,7 @@ import process from 'node:process'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 
-const repoName = 'Jeremy_web'
+const repoName = 'ManzanaCuatro'
 
 const resolveBase = ({ command }) => {
   if (command !== 'build') {

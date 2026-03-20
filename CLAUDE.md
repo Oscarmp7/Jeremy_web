@@ -224,7 +224,7 @@ npm run lint         # ESLint
 ```
 
 **Deploy**:
-- Vite base dinámica: `/` en Vercel (default), `/Jeremy_web/` en GitHub Pages (si `DEPLOY_TARGET=github-pages`)
+- Vite base dinámica: `/` en Vercel (default), `/ManzanaCuatro/` en GitHub Pages (si `DEPLOY_TARGET=github-pages`)
 - Branch activa: `feat/m4-redesign` → merge target: `master`
 
 ---

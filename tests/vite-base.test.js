@@ -17,6 +17,6 @@ test('vite only uses the repository subpath for explicit GitHub Pages builds', a
 
   const config = await viteConfig({ command: 'build', mode: 'production' })
 
-  assert.equal(config.base, '/Jeremy_web/')
+  assert.equal(config.base, '/ManzanaCuatro/')
   delete process.env.DEPLOY_TARGET
 })
