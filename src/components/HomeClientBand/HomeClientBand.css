@@ -54,7 +54,14 @@
   }
 
   to {
-    transform: translateX(-50%);
+    transform: translateX(-33.333%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-client-band__track {
+    animation: none;
+    will-change: auto;
   }
 }
 

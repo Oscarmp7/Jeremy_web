@@ -1,4 +1,4 @@
-import { Suspense, lazy, useState } from 'react'
+import { Suspense, lazy, useState, useCallback } from 'react'
 import { Routes, Route } from 'react-router'
 import MainLayout from './layouts/MainLayout'
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary'
@@ -19,11 +19,12 @@ export default function App() {
   const { theme, toggle } = useTheme()
   const { curtain, play } = useThemeTransition(toggle)
 
-  const handleThemeToggle = () => play()
+  const handleThemeToggle = useCallback(() => play(), [play])
+  const handleLoaderComplete = useCallback(() => setLoaded(true), [])
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme: handleThemeToggle }}>
-      {!loaded && <Loader onComplete={() => setLoaded(true)} />}
+      {!loaded && <Loader onComplete={handleLoaderComplete} />}
       {curtain}
       <div className={`app-shell ${loaded ? 'app-shell--ready' : ''}`}>
         <ErrorBoundary>

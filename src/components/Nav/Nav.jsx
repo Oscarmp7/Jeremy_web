@@ -59,22 +59,21 @@ export default function Nav() {
   }, [menuOpen])
 
   useEffect(() => {
-    if (menuOpen && mobileRef.current) {
-      if (reducedMotion) {
-        return undefined
-      }
+    if (!menuOpen || !mobileRef.current || reducedMotion) {
+      return undefined
+    }
 
-      const links = mobileRef.current.querySelectorAll('.nav__mobile-link')
-      gsap.from(links, {
+    const ctx = gsap.context(() => {
+      gsap.from('.nav__mobile-link', {
         opacity: 0,
         y: 30,
         stagger: 0.05,
         duration: 0.4,
         ease: 'power3.out',
       })
-    }
+    }, mobileRef)
 
-    return undefined
+    return () => ctx.revert()
   }, [menuOpen, reducedMotion])
 
   const closeMenu = useCallback(() => setMenuOpen(false), [])

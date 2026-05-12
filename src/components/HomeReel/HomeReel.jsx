@@ -4,7 +4,6 @@ import gsap from 'gsap'
 import { showcaseProjects, siteContent } from '../../data/siteContent'
 import usePrefersReducedMotion from '../../hooks/usePrefersReducedMotion'
 import useHomeReelScroll, { TOTAL_TRANSITION_COUNT } from '../../hooks/useHomeReelScroll'
-import ComparisonSlider from '../ComparisonSlider/ComparisonSlider'
 import './HomeReel.css'
 
 // ---------------------------------------------------------------------------
@@ -12,8 +11,7 @@ import './HomeReel.css'
 // ---------------------------------------------------------------------------
 
 const reelProjects = showcaseProjects.slice(0, 4)
-const colorizationStory = siteContent.colorization
-const colorizationReels = colorizationStory.reels
+const colorizationCases = siteContent.colorization.cases
 const REEL_TRANSITION_COUNT = reelProjects.length - 1
 const REEL_SETTLE_HOLD = 0.58
 const COLOR_STAGE_TRANSITION_COUNT = TOTAL_TRANSITION_COUNT - REEL_TRANSITION_COUNT - REEL_SETTLE_HOLD
@@ -36,35 +34,6 @@ const titleFrames = [
 // ---------------------------------------------------------------------------
 // Sub-components
 // ---------------------------------------------------------------------------
-
-function StoryMedia({ item, reducedMotion, shouldPlayVideo = true, className = '' }) {
-  if (shouldPlayVideo && !reducedMotion && item.video) {
-    return (
-      <video
-        className={className}
-        src={item.video}
-        poster={item.poster}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        aria-hidden="true"
-      />
-    )
-  }
-
-  return (
-    <img
-      className={className}
-      src={item.poster}
-      alt=""
-      loading="lazy"
-      decoding="async"
-      aria-hidden="true"
-    />
-  )
-}
 
 function ReelMedia({ project, index, reducedMotion, shouldPlayVideo = true }) {
   if (shouldPlayVideo && !reducedMotion && project.video) {
@@ -102,32 +71,23 @@ export default function HomeReel({ ready = true }) {
   const frameRefs = useRef([])
   const titleRefs = useRef([])
   const colorStageRef = useRef(null)
-  const comparisonStageRef = useRef(null)
-  const comparisonEntryRef = useRef(null)
+  const galleryItemRefs = useRef([])
   const measurementRef = useRef({
     titleFrameHeight: 0,
-    comparisonFrameHeight: 0,
+    titleWindowHeight: 0,
     viewportHeight: typeof window === 'undefined' ? 0 : window.innerHeight,
   })
   const toneRef = useRef('')
   const activeReelIndexRef = useRef(0)
-  const activeComparisonIndexRef = useRef(0)
-  const comparisonInteractiveRef = useRef(false)
   const colorStageActiveRef = useRef(false)
   const [activeReelIndex, setActiveReelIndex] = useState(0)
-  const [activeComparisonIndex, setActiveComparisonIndex] = useState(0)
-  const [comparisonInteractive, setComparisonInteractive] = useState(false)
   const [colorStageActive, setColorStageActive] = useState(false)
   const scrollHintRef = useRef(null)
   const reducedMotion = usePrefersReducedMotion()
   const safeActiveReelIndex = ready && !reducedMotion ? activeReelIndex : 0
-  const safeActiveComparisonIndex = ready && !reducedMotion ? activeComparisonIndex : 0
-  const safeComparisonInteractive = ready && !reducedMotion ? comparisonInteractive : false
   const safeColorStageActive = ready && !reducedMotion ? colorStageActive : false
   const shouldRenderReelMotionMedia = (index) =>
     !safeColorStageActive && Math.abs(index - safeActiveReelIndex) <= 1
-  const shouldRenderComparisonMotionMedia = (index) =>
-    safeColorStageActive && Math.abs(index - safeActiveComparisonIndex) <= 1
 
   useEffect(() => {
     const hint = scrollHintRef.current
@@ -159,19 +119,14 @@ export default function HomeReel({ ready = true }) {
       frameRefs,
       titleRefs,
       colorStageRef,
-      comparisonStageRef,
-      comparisonEntryRef,
+      galleryItemRefs,
       measurementRef,
       toneRef,
       activeReelIndexRef,
-      activeComparisonIndexRef,
-      comparisonInteractiveRef,
       colorStageActiveRef,
     },
     setters: {
       setActiveReelIndex,
-      setActiveComparisonIndex,
-      setComparisonInteractive,
       setColorStageActive,
     },
     titleFrames,
@@ -184,7 +139,6 @@ export default function HomeReel({ ready = true }) {
       ref={sectionRef}
       style={{
         '--reel-frames': reducedMotion ? 1 : reelProjects.length + REEL_SETTLE_HOLD + COLOR_STAGE_TRANSITION_COUNT,
-        '--comparison-count': colorizationReels.length,
       }}
     >
       <div className="home-reel__sticky">
@@ -236,79 +190,53 @@ export default function HomeReel({ ready = true }) {
               </div>
             </div>
 
-            <div
-              className="home-reel__comparison-stage"
-              ref={comparisonStageRef}
-              aria-hidden="true"
-            >
-              <div className="home-reel__comparison-entry" ref={comparisonEntryRef}>
-                <div className="home-reel__comparison-shell">
-                <div className="home-reel__comparison-track">
-                  {siteContent.colorization.reels.map((reel, index) => (
-                    <article
-                      className={`home-reel__comparison-slide home-reel__comparison-case${safeActiveComparisonIndex === index ? ' home-reel__comparison-case--active home-reel__comparison-slide--active' : ''}`}
-                      key={reel.title}
-                      aria-hidden={safeActiveComparisonIndex === index ? 'false' : 'true'}
-                    >
-                      <div className="home-reel__comparison-stage-inner">
-                        <div className="home-reel__comparison-details">
-                          <p className="home-reel__comparison-kicker">
-                            Colorizacion / caso {String(index + 1).padStart(2, '0')}
-                          </p>
-                          <h2 className="home-reel__comparison-title">{reel.title}</h2>
-                          <p className="home-reel__comparison-summary">{reel.summary}</p>
-                          <dl className="home-reel__comparison-facts">
-                            <div>
-                              <dt>Cliente</dt>
-                              <dd>{reel.client}</dd>
-                            </div>
-                            <div>
-                              <dt>Tipo</dt>
-                              <dd>{reel.category}</dd>
-                            </div>
-                            <div>
-                              <dt>Ano</dt>
-                              <dd>{reel.year}</dd>
-                            </div>
-                          </dl>
-                          <ul className="home-reel__comparison-tags" aria-label="Servicios del caso">
-                            {reel.tags.map((tag) => (
-                              <li key={tag}>{tag}</li>
-                            ))}
-                          </ul>
-                        </div>
-
-                        <div className="home-reel__comparison-device">
-                          <div className="home-reel__comparison-surface">
-                            <ComparisonSlider
-                              beforeLabel={colorizationStory.beforeLabel}
-                              afterLabel={colorizationStory.afterLabel}
-                              interactive={safeComparisonInteractive && safeActiveComparisonIndex === index}
-                              before={(
-                                <StoryMedia
-                                  item={reel}
-                                  reducedMotion={reducedMotion}
-                                  shouldPlayVideo={shouldRenderComparisonMotionMedia(index)}
-                                  className="home-reel__compare-media home-reel__compare-media--before"
-                                />
-                              )}
-                              after={(
-                                <StoryMedia
-                                  item={reel}
-                                  reducedMotion={reducedMotion}
-                                  shouldPlayVideo={shouldRenderComparisonMotionMedia(index)}
-                                  className="home-reel__compare-media home-reel__compare-media--after"
-                                />
-                              )}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </article>
-                  ))}
+            <div className="home-reel__gallery-stage" aria-hidden="true">
+              {colorizationCases.map((c, i) => (
+                <div
+                  key={c.title}
+                  className="home-reel__gallery-item"
+                  ref={(el) => { galleryItemRefs.current[i] = el }}
+                  style={{
+                    zIndex: 10 + i,
+                    '--gallery-x': `${i % 2 === 0 ? 100 : -100}%`,
+                  }}
+                >
+                  {c.isVideo ? (
+                    <video
+                      className="home-reel__gallery-media"
+                      src={c.media}
+                      poster={c.poster}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="none"
+                    />
+                  ) : (
+                    <img
+                      className="home-reel__gallery-media"
+                      src={c.media}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  )}
+                  <div className="home-reel__gallery-meta">
+                    <span className="home-reel__gallery-kicker">
+                      {c.category}
+                      {' — '}
+                      {c.year}
+                    </span>
+                    <p className="home-reel__gallery-title">{c.title}</p>
+                    <p className="home-reel__gallery-client">{c.client}</p>
+                    <ul className="home-reel__gallery-tags" aria-label="Tags del caso">
+                      {c.tags.map((tag) => (
+                        <li key={tag} className="home-reel__gallery-tag">{tag}</li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 

@@ -6,6 +6,7 @@ import './PageTransition.css'
 
 export default function PageTransition({ children }) {
   const stageRef = useRef(null)
+  const wipeRef = useRef(null)
   const location = useLocation()
   const isFirstRender = useRef(true)
   const reducedMotion = usePrefersReducedMotion()
@@ -23,16 +24,21 @@ export default function PageTransition({ children }) {
 
     window.scrollTo(0, 0)
 
-    // Content itself sweeps in left-to-right like a film frame advancing
-    gsap.fromTo(
-      stageRef.current,
-      { clipPath: 'inset(0 100% 0 0)' },
-      { clipPath: 'inset(0 0% 0 0)', duration: 1, ease: 'expo.out' },
-    )
+    // Overlay slides out right, revealing content left-to-right (compositor-only: transform)
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        wipeRef.current,
+        { xPercent: 0 },
+        { xPercent: 100, duration: 1, ease: 'expo.out' },
+      )
+    }, stageRef)
+
+    return () => ctx.revert()
   }, [location.pathname, reducedMotion])
 
   return (
     <div ref={stageRef} className="page-stage" data-route={location.pathname}>
+      <div ref={wipeRef} className="page-stage__wipe" aria-hidden="true" />
       {children}
     </div>
   )

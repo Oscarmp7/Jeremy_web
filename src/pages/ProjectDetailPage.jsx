@@ -12,6 +12,7 @@ export default function ProjectDetailPage() {
   const { slug } = useParams()
   const reducedMotion = usePrefersReducedMotion()
 
+  const containerRef = useRef(null)
   const heroImgRef = useRef(null)
   const titleRef = useRef(null)
   const metaRef = useRef(null)
@@ -25,7 +26,6 @@ export default function ProjectDetailPage() {
     if (!project || reducedMotion) return undefined
 
     const ctx = gsap.context(() => {
-      // Hero parallax
       if (heroImgRef.current) {
         gsap.fromTo(
           heroImgRef.current,
@@ -43,25 +43,26 @@ export default function ProjectDetailPage() {
         )
       }
 
-      // Title mask reveal
-      if (titleRef.current) {
-        gsap.from(titleRef.current.querySelector('.project-detail__title-inner'), {
-          yPercent: 100,
-          duration: 0.8,
-          ease: 'power3.out',
-          delay: 0.2,
-        })
-      }
-
-      // Meta fade-in
-      if (metaRef.current) {
-        gsap.from(metaRef.current, {
-          opacity: 0,
-          y: 10,
-          duration: 0.6,
-          ease: 'power2.out',
-          delay: 0.5,
-        })
+      // Title mask reveal — fires after hero image loads (or immediately if already cached)
+      if (titleRef.current && heroImgRef.current) {
+        const titleInner = titleRef.current.querySelector('.project-detail__title-inner')
+        const revealTitle = () => {
+          gsap.from(titleInner, { yPercent: 100, duration: 0.8, ease: 'power3.out' })
+          if (metaRef.current) {
+            gsap.from(metaRef.current, {
+              opacity: 0,
+              y: 10,
+              duration: 0.6,
+              ease: 'power2.out',
+              delay: 0.3,
+            })
+          }
+        }
+        if (heroImgRef.current.complete) {
+          revealTitle()
+        } else {
+          heroImgRef.current.addEventListener('load', revealTitle, { once: true })
+        }
       }
 
       // Scope tags stagger
@@ -93,7 +94,7 @@ export default function ProjectDetailPage() {
           },
         })
       }
-    })
+    }, containerRef)
 
     return () => ctx.revert()
   }, [project, reducedMotion])
@@ -117,7 +118,7 @@ export default function ProjectDetailPage() {
   const nextProject = showcaseProjects[(projectIndex + 1) % total]
 
   return (
-    <div className="page page--project-detail">
+    <div ref={containerRef} className="page page--project-detail">
       {/* Hero */}
       <section className="project-detail__hero">
         <img

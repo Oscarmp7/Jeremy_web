@@ -1,9 +1,6 @@
 import { useEffect } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { siteContent } from '../data/siteContent'
-
-gsap.registerPlugin(ScrollTrigger)
 
 // ---------------------------------------------------------------------------
 // Timing constants — reel section
@@ -20,7 +17,7 @@ const TITLE_MAX_BLUR = 6
 const TITLE_MAX_SHIFT = 6
 
 // ---------------------------------------------------------------------------
-// Timing constants — color / comparison section
+// Timing constants — color title section
 // ---------------------------------------------------------------------------
 
 const COLOR_STAGE_FADE_IN_START = 0.04
@@ -42,27 +39,28 @@ const COLOR_TITLE_COVER_START = 0.74
 const COLOR_TITLE_COVER_END = 1
 const COLOR_TITLE_COVER_Y = -42
 const COLOR_TITLE_COVER_SCALE = 0.968
-const COLOR_TITLE_SUPPRESS_START = 0
-const COLOR_TITLE_SUPPRESS_END = 0.48
-const COLOR_METADATA_REVEAL_START = 0.06
-const COLOR_METADATA_REVEAL_END = 0.42
-const COLOR_COMPARISON_ENTRY_START = 1.12
-const COLOR_COMPARISON_ENTRY_END = 2.38
-const COLOR_COMPARISON_FIRST_HOLD = 1.04
-const COLOR_COMPARISON_TRAVEL_DURATION = 1.08
-const COLOR_COMPARISON_CENTER_HOLD = 0.98
-const COLOR_COMPARISON_FINAL_HOLD = 1.1
-const COLOR_COMPARISON_FIRST_HOLD_END = COLOR_COMPARISON_ENTRY_END + COLOR_COMPARISON_FIRST_HOLD
-const COLOR_COMPARISON_SECOND_CENTER_START = COLOR_COMPARISON_FIRST_HOLD_END + COLOR_COMPARISON_TRAVEL_DURATION
-const COLOR_COMPARISON_SECOND_HOLD_END = COLOR_COMPARISON_SECOND_CENTER_START + COLOR_COMPARISON_CENTER_HOLD
-const COLOR_COMPARISON_THIRD_CENTER_START = COLOR_COMPARISON_SECOND_HOLD_END + COLOR_COMPARISON_TRAVEL_DURATION
-const COLOR_COMPARISON_FINAL_HOLD_END = COLOR_COMPARISON_THIRD_CENTER_START + COLOR_COMPARISON_FINAL_HOLD
-const COLOR_STAGE_TRANSITION_COUNT = COLOR_COMPARISON_FINAL_HOLD_END
+
+// ---------------------------------------------------------------------------
+// Timing constants — fullscreen gallery section
+// ---------------------------------------------------------------------------
+
+const GALLERY_INTRO_HOLD = 0.4     // pause after title settles (colorRaw 1.0 → 1.4)
+const GALLERY_ENTRY_DURATION = 0.45 // slide-in duration per image
+const GALLERY_HOLD_DURATION = 0.85  // hold with metadata per image
+const GALLERY_START_COLORRAW = 1.0 + GALLERY_INTRO_HOLD // = 1.4
+const GALLERY_PERIOD = GALLERY_ENTRY_DURATION + GALLERY_HOLD_DURATION // = 1.3
+const GALLERY_N_CASES = 3
+const GALLERY_FIRST_ENTRY_END = GALLERY_START_COLORRAW + GALLERY_ENTRY_DURATION // = 1.85
+
+// colorRaw 0 → GALLERY_START_COLORRAW: title animation
+// colorRaw GALLERY_START_COLORRAW → end: gallery
+const COLOR_STAGE_TRANSITION_COUNT = GALLERY_START_COLORRAW + GALLERY_N_CASES * GALLERY_PERIOD
+// = 1.4 + 3 * 1.3 = 5.3
+
 export const TOTAL_TRANSITION_COUNT = reelTransitionCount + REEL_SETTLE_HOLD + COLOR_STAGE_TRANSITION_COUNT
+// = 3 + 0.58 + 5.3 = 8.88
+
 const REEL_TRANSITION_COUNT = reelTransitionCount
-const COLOR_COMPARISON_ENTRY_Y = 0
-const COLOR_COMPARISON_ENTRY_SCALE = 1
-const COLOR_COMPARISON_ENTRY_ROTATE = 0
 
 // ---------------------------------------------------------------------------
 // Pure math helpers
@@ -104,30 +102,21 @@ export default function useHomeReelScroll({
     frameRefs,
     titleRefs,
     colorStageRef,
-    comparisonStageRef,
-    comparisonEntryRef,
+    galleryItemRefs,
     measurementRef,
     toneRef,
     activeReelIndexRef,
-    activeComparisonIndexRef,
-    comparisonInteractiveRef,
     colorStageActiveRef,
   } = refs
 
   const {
     setActiveReelIndex,
-    setActiveComparisonIndex,
-    setComparisonInteractive,
     setColorStageActive,
   } = setters
-
-  const colorizationReels = siteContent.colorization.reels
 
   useEffect(() => {
     if (!ready || reducedMotion) {
       activeReelIndexRef.current = 0
-      activeComparisonIndexRef.current = 0
-      comparisonInteractiveRef.current = false
       colorStageActiveRef.current = false
       document.documentElement.dataset.homeReelTone = 'media'
       return undefined
@@ -137,24 +126,17 @@ export default function useHomeReelScroll({
     const frames = frameRefs.current.filter(Boolean)
     const titles = titleRefs.current.filter(Boolean)
     const colorStage = colorStageRef.current
-    const comparisonStage = comparisonStageRef.current
-    const comparisonEntry = comparisonEntryRef.current
+    const galleryItems = (galleryItemRefs.current || []).filter(Boolean)
     const titleWindow = section.querySelector('.home-reel__title-window')
     const colorTitleShell = colorStage?.querySelector('.home-reel__color-title-shell')
-    const comparisonFrame = comparisonEntry?.querySelector('.home-reel__comparison-stage-inner')
-    const comparisonCases = comparisonEntry
-      ? Array.from(comparisonEntry.querySelectorAll('.home-reel__comparison-case'))
-      : []
 
     if (
       !section
       || !frames.length
       || !titles.length
       || !colorStage
-      || !comparisonStage
-      || !comparisonEntry
       || !colorTitleShell
-      || !comparisonFrame
+      || !galleryItems.length
     ) {
       return undefined
     }
@@ -165,18 +147,6 @@ export default function useHomeReelScroll({
       toneRef.current = tone
       document.documentElement.dataset.homeReelTone = tone
       window.dispatchEvent(new CustomEvent('home-reel-stagechange', { detail: { tone } }))
-    }
-
-    const syncComparisonState = (nextIndex, nextInteractive) => {
-      if (activeComparisonIndexRef.current !== nextIndex) {
-        activeComparisonIndexRef.current = nextIndex
-        setActiveComparisonIndex(nextIndex)
-      }
-
-      if (comparisonInteractiveRef.current !== nextInteractive) {
-        comparisonInteractiveRef.current = nextInteractive
-        setComparisonInteractive(nextInteractive)
-      }
     }
 
     const syncReelState = (nextIndex) => {
@@ -195,11 +165,13 @@ export default function useHomeReelScroll({
 
     const syncMeasurements = () => {
       const viewportHeight = window.innerHeight || measurementRef.current.viewportHeight || 0
+      // Batch all DOM reads before writing
+      const titleFrameHeight = colorTitleShell.offsetHeight
+      const titleWindowHeight = titleWindow?.offsetHeight ?? 0
 
       measurementRef.current = {
-        titleFrameHeight: colorTitleShell.offsetHeight || Math.round(viewportHeight * 0.34),
-        comparisonFrameHeight: comparisonFrame.offsetHeight || Math.round(viewportHeight * 0.68),
-        titleWindowHeight: titleWindow?.offsetHeight || 0,
+        titleFrameHeight: titleFrameHeight || Math.round(viewportHeight * 0.34),
+        titleWindowHeight,
         viewportHeight,
       }
     }
@@ -213,7 +185,6 @@ export default function useHomeReelScroll({
       : null
 
     resizeObserver?.observe(colorTitleShell)
-    resizeObserver?.observe(comparisonFrame)
     if (titleWindow) resizeObserver?.observe(titleWindow)
     window.addEventListener('resize', syncMeasurements, { passive: true })
 
@@ -358,9 +329,6 @@ export default function useHomeReelScroll({
 
       // Clip title-window to match frame 1's top edge as it slides up,
       // creating the effect of frame 1 physically covering the title.
-      // Title-window is vertically centered: its bottom edge = vh/2 + titleWindowHeight/2.
-      // Frame 1's top edge = lerp(vh, 0, localProgress).
-      // We clip from the bottom by however much frame 1 overlaps the title-window.
       if (titleWindow) {
         if (transitionIndex === 0) {
           const { viewportHeight, titleWindowHeight } = measurementRef.current
@@ -373,6 +341,10 @@ export default function useHomeReelScroll({
           titleWindow.style.clipPath = ''
         }
       }
+
+      // ---------------------------------------------------------------------------
+      // Color stage — title animation
+      // ---------------------------------------------------------------------------
 
       const colorRaw = Math.max(0, raw - REEL_TRANSITION_COUNT - REEL_SETTLE_HOLD)
       const colorIntroProgress = clamp01(colorRaw)
@@ -396,11 +368,6 @@ export default function useHomeReelScroll({
       const titleFillOpacity = titleFillProgress <= 0
         ? 0
         : normalizeRange(titleFillProgress, 0, 0.12)
-      const comparisonEntryProgress = normalizeRange(
-        colorRaw,
-        COLOR_COMPARISON_ENTRY_START,
-        COLOR_COMPARISON_ENTRY_END,
-      )
       const titleCoverProgress = colorRaw > 1
         ? 1
         : normalizeRange(
@@ -408,100 +375,24 @@ export default function useHomeReelScroll({
           COLOR_TITLE_COVER_START,
           COLOR_TITLE_COVER_END,
         )
-      const titleSuppressProgress = normalizeRange(
-        comparisonEntryProgress,
-        COLOR_TITLE_SUPPRESS_START,
-        COLOR_TITLE_SUPPRESS_END,
-      )
-      let comparisonTrackProgress = 0
-      let comparisonHoldProgress = 0
-      let activeIndex = 0
-      let comparisonTraveling = false
 
-      if (colorRaw < COLOR_COMPARISON_FIRST_HOLD_END) {
-        activeIndex = 0
-        comparisonTrackProgress = 0
-        comparisonHoldProgress = normalizeRange(
-          colorRaw,
-          COLOR_COMPARISON_ENTRY_END,
-          COLOR_COMPARISON_FIRST_HOLD_END,
-        )
-      } else if (colorRaw < COLOR_COMPARISON_SECOND_CENTER_START) {
-        const travelProgress = normalizeRange(
-          colorRaw,
-          COLOR_COMPARISON_FIRST_HOLD_END,
-          COLOR_COMPARISON_SECOND_CENTER_START,
-        )
-
-        comparisonTrackProgress = travelProgress
-        activeIndex = travelProgress < 0.5 ? 0 : 1
-        comparisonTraveling = true
-      } else if (colorRaw < COLOR_COMPARISON_SECOND_HOLD_END) {
-        activeIndex = 1
-        comparisonTrackProgress = 1
-        comparisonHoldProgress = normalizeRange(
-          colorRaw,
-          COLOR_COMPARISON_SECOND_CENTER_START,
-          COLOR_COMPARISON_SECOND_HOLD_END,
-        )
-      } else if (colorRaw < COLOR_COMPARISON_THIRD_CENTER_START) {
-        const travelProgress = normalizeRange(
-          colorRaw,
-          COLOR_COMPARISON_SECOND_HOLD_END,
-          COLOR_COMPARISON_THIRD_CENTER_START,
-        )
-
-        comparisonTrackProgress = 1 + travelProgress
-        activeIndex = travelProgress < 0.5 ? 1 : 2
-        comparisonTraveling = true
-      } else {
-        activeIndex = 2
-        comparisonTrackProgress = 2
-        comparisonHoldProgress = normalizeRange(
-          colorRaw,
-          COLOR_COMPARISON_THIRD_CENTER_START,
-          COLOR_COMPARISON_FINAL_HOLD_END,
-        )
-      }
-
-      const comparisonDetailsOpacity = comparisonTraveling
-        ? 0
-        : normalizeRange(
-          comparisonHoldProgress,
-          COLOR_METADATA_REVEAL_START,
-          COLOR_METADATA_REVEAL_END,
-        )
       const tone = colorIntroProgress >= COLOR_TONE_SWITCH_START ? 'pure' : 'media'
-      const comparisonCentered = !comparisonTraveling && colorRaw >= COLOR_COMPARISON_ENTRY_END
-      const {
-        titleFrameHeight,
-        comparisonFrameHeight,
-        viewportHeight,
-      } = measurementRef.current
+      const { titleFrameHeight, viewportHeight } = measurementRef.current
       const safeViewportHeight = viewportHeight || window.innerHeight || 0
       const titleEntryDistance = Math.max(
         safeViewportHeight + (titleFrameHeight * 0.7),
         safeViewportHeight * 1.12,
       )
-      const comparisonStageOpacity = colorRaw > 0 ? 1 : 0
-      const comparisonEntryDistance = Math.max(
-        safeViewportHeight + (comparisonFrameHeight * 0.5) + 48,
-        safeViewportHeight * 1.18,
-      )
 
       announceTone(tone)
       syncReelState(stageReelIndex)
-      syncComparisonState(
-        activeIndex,
-        comparisonCentered,
-      )
       syncColorStageState(colorRaw > 0.001)
 
       section.style.setProperty('--legacy-ui-opacity', legacyUiOpacity.toFixed(3))
       section.style.setProperty('--grade-stage-opacity', colorStageOpacity.toFixed(3))
       section.style.setProperty('--color-wash-opacity', washProgress.toFixed(3))
       section.style.setProperty('--color-wash-blur', `${lerp(0, 18, washProgress).toFixed(2)}px`)
-      section.style.setProperty('--grade-title-opacity', comparisonStageOpacity.toFixed(3))
+      section.style.setProperty('--grade-title-opacity', colorStageOpacity.toFixed(3))
       section.style.setProperty('--grade-title-scale', lerp(
         COLOR_TITLE_ENTRY_SCALE,
         1,
@@ -524,52 +415,44 @@ export default function useHomeReelScroll({
       ).toFixed(2)}deg`)
       section.style.setProperty('--grade-title-fill', `${lerp(0, 100, titleFillProgress).toFixed(2)}%`)
       section.style.setProperty('--grade-title-fill-opacity', titleFillOpacity.toFixed(3))
-      section.style.setProperty('--grade-title-rest-opacity', lerp(1, 0, titleSuppressProgress).toFixed(3))
       section.style.setProperty('--grade-title-cover-y', `${lerp(
         0,
         COLOR_TITLE_COVER_Y,
-        Math.max(titleCoverProgress, titleSuppressProgress),
+        titleCoverProgress,
       ).toFixed(2)}px`)
       section.style.setProperty('--grade-title-cover-scale', lerp(
         1,
         COLOR_TITLE_COVER_SCALE,
-        Math.max(titleCoverProgress, titleSuppressProgress),
+        titleCoverProgress,
       ).toFixed(3))
       section.style.setProperty('--grade-title-cover-opacity', lerp(
         1,
         0.86,
-        Math.max(titleCoverProgress, titleSuppressProgress),
+        titleCoverProgress,
       ).toFixed(3))
-      section.style.setProperty('--comparison-stage-opacity', comparisonStageOpacity.toFixed(3))
-      section.style.setProperty('--comparison-stage-y', `${lerp(
-        Math.max(COLOR_COMPARISON_ENTRY_Y, comparisonEntryDistance),
-        0,
-        comparisonEntryProgress,
-      ).toFixed(2)}px`)
-      section.style.setProperty('--comparison-stage-scale', lerp(
-        COLOR_COMPARISON_ENTRY_SCALE,
-        1,
-        comparisonEntryProgress,
-      ).toFixed(3))
-      section.style.setProperty('--comparison-stage-rotate', `${lerp(
-        COLOR_COMPARISON_ENTRY_ROTATE,
-        0,
-        comparisonEntryProgress,
-      ).toFixed(2)}deg`)
-      section.style.setProperty(
-        '--comparison-track-shift',
-        `-${((comparisonTrackProgress / colorizationReels.length) * 100).toFixed(3)}%`,
-      )
-      section.style.setProperty('--comparison-details-opacity', comparisonDetailsOpacity.toFixed(3))
 
-      if (comparisonDetailsOpacity >= 0.99 && comparisonCases[activeIndex]) {
-        comparisonCases[activeIndex].classList.add('home-reel__comparison-case--revealed')
-      }
+      // Collapse the title once the first gallery image has fully covered it
+      section.style.setProperty('--grade-title-covered', colorRaw >= GALLERY_FIRST_ENTRY_END ? '0' : '1')
 
-      comparisonEntry.style.pointerEvents = comparisonCentered ? 'auto' : 'none'
       colorStage.setAttribute('aria-hidden', colorStageOpacity > 0.12 ? 'false' : 'true')
-      comparisonStage.setAttribute('aria-hidden', comparisonStageOpacity > 0 ? 'false' : 'true')
-      comparisonStage.style.pointerEvents = comparisonCentered ? 'auto' : 'none'
+
+      // ---------------------------------------------------------------------------
+      // Fullscreen gallery — alternating slide-in from right / left / right
+      // ---------------------------------------------------------------------------
+
+      galleryItems.forEach((item, i) => {
+        const entryStart = GALLERY_START_COLORRAW + i * GALLERY_PERIOD
+        const entryEnd = entryStart + GALLERY_ENTRY_DURATION
+        const metaEnd = entryEnd + 0.3  // metadata fades in over first 0.3 of hold
+
+        const entryP = clamp01(normalizeRange(colorRaw, entryStart, entryEnd))
+        const startOffset = i % 2 === 0 ? 100 : -100  // right, left, right...
+        const x = lerp(startOffset, 0, entryP)
+        item.style.setProperty('--gallery-x', `${x.toFixed(2)}%`)
+
+        const metaP = clamp01(normalizeRange(colorRaw, entryEnd, metaEnd))
+        item.style.setProperty('--gallery-meta-opacity', metaP.toFixed(3))
+      })
     }
 
     announceTone('media')
@@ -599,8 +482,6 @@ export default function useHomeReelScroll({
       if (titleWindow) titleWindow.style.clipPath = ''
       toneRef.current = ''
       activeReelIndexRef.current = 0
-      activeComparisonIndexRef.current = 0
-      comparisonInteractiveRef.current = false
       colorStageActiveRef.current = false
       announceTone('media')
     }

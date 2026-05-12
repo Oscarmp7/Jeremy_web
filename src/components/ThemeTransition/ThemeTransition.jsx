@@ -28,7 +28,7 @@ export default function useThemeTransition(onMidpoint) {
     const tl = gsap.timeline({
       onComplete: () => {
         animatingRef.current = false
-        veil.style.background = ''
+        if (veilRef.current) veilRef.current.style.background = ''
       },
     })
 

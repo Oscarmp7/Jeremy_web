@@ -22,6 +22,7 @@ export default function HomeClientBand() {
         <div className="home-client-band__track">
           <ClientGroup />
           <ClientGroup ariaHidden />
+          <ClientGroup ariaHidden />
         </div>
       </div>
     </section>

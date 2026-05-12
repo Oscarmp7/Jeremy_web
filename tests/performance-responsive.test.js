@@ -5,23 +5,22 @@ import { readFileSync } from 'node:fs'
 test('home reel caches stage measurements and limits how many videos stay live', () => {
   const source = readFileSync(new URL('../src/components/HomeReel/HomeReel.jsx', import.meta.url), 'utf8')
 
-  assert.match(source, /ResizeObserver/)
   assert.match(source, /const measurementRef = useRef/)
   assert.match(source, /const \[activeReelIndex,\s*setActiveReelIndex\] = useState\(0\)/)
   assert.match(source, /const shouldRenderReelMotionMedia =/)
-  assert.match(source, /const shouldRenderComparisonMotionMedia =/)
+  assert.match(source, /galleryItemRefs/)
   assert.match(source, /shouldPlayVideo=\{shouldRenderReelMotionMedia\(index\)\}/)
-  assert.match(source, /shouldPlayVideo=\{shouldRenderComparisonMotionMedia\(index\)\}/)
   assert.doesNotMatch(source, /getBoundingClientRect\(\)/)
 })
 
-test('comparison stage shifts to a stacked layout sooner to avoid clipped metadata on narrow laptops', () => {
+test('gallery stage renders fullscreen items driven by scroll CSS variables', () => {
   const source = readFileSync(new URL('../src/components/HomeReel/HomeReel.css', import.meta.url), 'utf8')
 
-  assert.match(
-    source,
-    /@media \(max-width: 1200px\)\s*\{[\s\S]*\.home-reel__comparison-details[\s\S]*position:\s*static;/,
-  )
+  assert.match(source, /\.home-reel__gallery-stage/)
+  assert.match(source, /\.home-reel__gallery-item/)
+  assert.match(source, /translateX\(var\(--gallery-x/)
+  assert.match(source, /\.home-reel__gallery-meta/)
+  assert.doesNotMatch(source, /\.home-reel__comparison-stage/)
 })
 
 test('projects filter rail stops being sticky when it becomes a horizontal scroller on small screens', () => {
