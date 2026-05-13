@@ -90,9 +90,7 @@ export default function ContactPage() {
         ))}
       </div>
 
-      <div className="contact__separator" />
-
-      <p className="contact__notes">
+      <p className="contact__notes" style={{ marginTop: '3rem' }}>
         {brand.domain}&ensp;·&ensp;{brand.location}
       </p>
 
