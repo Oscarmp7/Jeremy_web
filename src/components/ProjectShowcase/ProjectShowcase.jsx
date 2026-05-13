@@ -25,43 +25,45 @@ export default function ProjectShowcase() {
       .map((f) => [f.id, f.label]),
   )
 
-  // Hero entry animation — runs once on mount
+  // Hero + filters entry
   useEffect(() => {
     if (reducedMotion) return
     const ctx = gsap.context(() => {
       gsap.timeline({ defaults: { ease: 'expo.out' } })
-        .from('.projects-showcase__hero-meta', { y: 14, opacity: 0, duration: 0.6 })
-        .from('.projects-showcase__title', { yPercent: 105, duration: 0.88 }, '-=0.42')
-        .from('.projects-showcase__intro', { y: 18, opacity: 0, duration: 0.72 }, '-=0.58')
-        .from('.projects-showcase__filters', { y: 12, opacity: 0, duration: 0.52 }, '-=0.46')
+        .from('.projects-showcase__hero', { y: 10, opacity: 0, duration: 0.5 })
+        .from('.projects-showcase__filters', { y: 8, opacity: 0, duration: 0.45 }, '-=0.3')
     }, sectionRef)
     return () => ctx.revert()
   }, [reducedMotion])
 
-  // Case reveal — scroll on first mount, stagger on filter change
+  // Case reveals — scroll on first mount, immediate stagger on filter change
   useEffect(() => {
     if (reducedMotion) return
     const ctx = gsap.context(() => {
       if (isInitialMount.current) {
         isInitialMount.current = false
-        gsap.from('.projects-showcase__case', {
-          y: 48,
-          opacity: 0,
-          duration: 0.82,
-          ease: 'expo.out',
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: listRef.current,
-            start: 'top 82%',
+        ScrollTrigger.batch('.projects-showcase__case', {
+          onEnter: (elements) => {
+            gsap.from(elements, {
+              opacity: 0,
+              scale: 1.025,
+              duration: 1,
+              ease: 'expo.out',
+              stagger: 0.14,
+              clearProps: 'scale',
+            })
           },
+          start: 'top 94%',
+          once: true,
         })
       } else {
         gsap.from('.projects-showcase__case', {
-          y: 24,
           opacity: 0,
-          duration: 0.62,
+          scale: 1.02,
+          duration: 0.72,
           ease: 'expo.out',
-          stagger: 0.08,
+          stagger: 0.09,
+          clearProps: 'scale',
         })
       }
     }, listRef)
@@ -71,14 +73,8 @@ export default function ProjectShowcase() {
   return (
     <section className="projects-showcase" ref={sectionRef}>
       <header className="projects-showcase__hero">
-        <div className="projects-showcase__hero-meta">
-          <span className="projects-showcase__eyebrow">{projectsPage.eyebrow}</span>
-          <span className="projects-showcase__rail">{projectCount}</span>
-        </div>
-        <div className="projects-showcase__title-wrap">
-          <h1 className="projects-showcase__title">{projectsPage.title}</h1>
-        </div>
-        <p className="projects-showcase__intro">{projectsPage.intro}</p>
+        <span className="projects-showcase__eyebrow">{projectsPage.eyebrow}</span>
+        <span className="projects-showcase__rail">{projectCount}</span>
       </header>
 
       <nav
@@ -104,6 +100,15 @@ export default function ProjectShowcase() {
       <div className="projects-showcase__list" ref={listRef}>
         {visibleProjects.map((project, index) => (
           <article key={project.slug} className="projects-showcase__case">
+            <div className="projects-showcase__case-topline">
+              <span className="projects-showcase__case-index">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <span>{project.client}</span>
+              <span className="projects-showcase__case-dot" aria-hidden="true" />
+              <span>{project.year}</span>
+            </div>
+
             <div className="projects-showcase__case-media">
               <Link
                 to={`/proyectos/${project.slug}`}
@@ -119,36 +124,15 @@ export default function ProjectShowcase() {
                     fetchPriority={index === 0 ? 'high' : 'auto'}
                     decoding="async"
                   />
-                  <div className="projects-showcase__case-overlay" aria-hidden="true">
-                    <span className="projects-showcase__case-overlay-label">Ver caso</span>
+                  <div className="projects-showcase__case-body" aria-hidden="true">
+                    <p className="projects-showcase__case-category">{project.category}</p>
+                    <h2 className="projects-showcase__case-title">{project.title}</h2>
                   </div>
                 </div>
               </Link>
             </div>
 
-            <div className="projects-showcase__case-body">
-              <div className="projects-showcase__case-topline">
-                <span className="projects-showcase__case-index">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <span>{project.client}</span>
-                <span className="projects-showcase__case-dot" aria-hidden="true" />
-                <span>{project.year}</span>
-              </div>
-
-              <p className="projects-showcase__case-category">{project.category}</p>
-
-              <h2 className="projects-showcase__case-title">
-                <Link
-                  to={`/proyectos/${project.slug}`}
-                  className="projects-showcase__case-link"
-                >
-                  {project.title}
-                </Link>
-              </h2>
-
-              <p className="projects-showcase__case-objective">{project.objective}</p>
-
+            <div className="projects-showcase__case-strip">
               <ul className="projects-showcase__case-chips" aria-label="Servicios aplicados">
                 {project.disciplines.map((discipline) => (
                   <li key={discipline} className="projects-showcase__case-chip">
@@ -156,12 +140,11 @@ export default function ProjectShowcase() {
                   </li>
                 ))}
               </ul>
-
               <Link
                 to={`/proyectos/${project.slug}`}
                 className="projects-showcase__case-link projects-showcase__case-link--cta"
               >
-                <span>Ver caso completo</span>
+                Ver caso
                 <span className="projects-showcase__case-cta-icon" aria-hidden="true" />
               </Link>
             </div>
